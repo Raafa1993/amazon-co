@@ -21,6 +21,7 @@ import {
   ContentForm,
   NotRegister,
 } from "./styles";
+import Radio from "../../components/form/Radio";
 
 interface SignInFormData {
   login: string;
@@ -67,7 +68,7 @@ export default function SignIn() {
           <OptionUser>
             <h2>Tipo de Instituição</h2>
             <RadioOption>
-              <InputRadioDefault
+              <Radio
                 options={[
                   {
                     label: "Usúario",
@@ -109,9 +110,9 @@ export default function SignIn() {
                   Esquecia a senha
                 </button>
 
-                <ButtonSubmit 
+                <ButtonSubmit
                   type="submit"
-                  onClick={() => history.push('/home')}
+                  onClick={() => history.push("/home")}
                 >
                   Entrar
                 </ButtonSubmit>

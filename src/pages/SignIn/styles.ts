@@ -64,7 +64,7 @@ export const ContentSignIn = styled.div`
     align-items: center;
     justify-content: center;
 
-    margin: 0 10%;
+    /* margin: 0 10%; */
     height: 100vh;
 `;
 
@@ -75,7 +75,7 @@ export const Contentinfo = styled.div`
     justify-content: center;
     width: 100%;
     height: 100%;
-    padding-top: 20px;
+    padding: 0 10%;
 
     overflow-y: scroll;
     ::-webkit-scrollbar {
@@ -126,14 +126,8 @@ export const OptionUser = styled.div`
 export const RadioOption = styled.div`
     display: flex;
     align-items: center;
-    width: 40%;
-    margin-top: 10px;
-
-    .inputRadio {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+    width: 100%;
+    margin-top: 18px;
 `;
 
 export const ContentForm = styled.div`

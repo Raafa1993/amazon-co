@@ -143,8 +143,8 @@ export default function Home() {
         title={'Tem certezxa que deseja Cancelar esse pedido?'}
         subtitle={'Para cancelar é necessario colocar um procedimento avisando o motivo do cancelamento'}
         textArea={true}
-        buttonSend={'Excluir'}
-        buttonCancel={'Voltar'}
+        buttonSend={'Enviar'}
+        buttonCancel={'Cancelar'}
       />
 
     </Container>

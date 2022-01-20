@@ -1,9 +1,11 @@
 import ButtonDefault from "../ButtonDefault";
 import InputTextarea from "../InputTextarea";
-import { 
-    ContainerOverlay, 
-    Container,
-    TitleModal,
+import {
+  ContainerOverlay,
+  Container,
+  TitleModal,
+  SectionTextArea,
+  SectionButtonsModal,
 } from "./styles";
 
 interface ModalProps {
@@ -38,35 +40,36 @@ export default function Modal({
       <Container openModal={openModal}>
         <TitleModal>
           <h1>{title}</h1>
-          {subtitle && (
-            <span>
-                Para cancelar é necessario colocar um procedimento avisando o motivo
-                do cancelamento
-            </span>
-          )}
+          {subtitle && <span>{subtitle}</span>}
         </TitleModal>
 
         {textArea && (
+          <SectionTextArea>
             <InputTextarea
               onChangeText={value => console.log(value)}
-              value={"value"}
+              placeholder="Digite aqui"
+              value={""}
             />
+          </SectionTextArea>
         )}
 
-        {buttonSend && (
-            <ButtonDefault 
-                status="Pendente"
-                text={buttonSend}
+        <SectionButtonsModal>
+          {buttonSend && (
+            <ButtonDefault
+              status="Concluido"
+              text={buttonSend}
+              onClick={() => console.log("clicou")}
             />
-        )}
+          )}
 
-        {buttonCancel && (
-            <ButtonDefault 
-                status="Concluido"
-                text={buttonCancel}    
+          {buttonCancel && (
+            <ButtonDefault
+              status="Pendente"
+              text={buttonCancel}
+              onClick={onClose}
             />
-        )}
-
+          )}
+        </SectionButtonsModal>
       </Container>
     </ContainerOverlay>
   );
