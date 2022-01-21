@@ -24,6 +24,7 @@ export const Container = styled.div<Props>`
   flex-direction: column;
   align-items: center;
 
+  width: 580px;
   background: #fff;
   box-shadow: 5px 5px 30px #0000001a;
   border-radius: 16px;

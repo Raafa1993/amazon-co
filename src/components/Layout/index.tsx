@@ -14,8 +14,12 @@ export default function Layout(props: any) {
               name: 'Home',
             },
             {
-              to: '/myAccount',
+              to: '/minha-conta',
               name: 'Minha Conta',
+            },
+            {
+              to: '/meus-pedidos',
+              name: 'Meus pedidos',
             },
           ]}
         />

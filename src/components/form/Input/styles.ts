@@ -4,6 +4,7 @@ interface Props {
     value: string;
     isField: boolean;
     isFocused: boolean;
+    isDisabled?: boolean;
   }
 
 export const Container = styled.div<Props>`
@@ -35,17 +36,21 @@ export const Container = styled.div<Props>`
       font-size: 14px;
     }
 
-    ${props =>
-    props.isFocused &&
-    css`
-      /* color: var(--blue); */
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.4;
+      color: #474747;
+      font-weight: 600;
+    }
+
+    ${props => props.isFocused && css`
       border: 1px solid var(--green);
     `}
-  /* ${props =>
-    props.isField &&
-    css`
-      color: var(--green);
+
+    /* ${props => props.isDisabled && css`
+      cursor: not-allowed;
     `} */
+
   }
 
   button {
@@ -62,7 +67,7 @@ export const Container = styled.div<Props>`
   label {
     font-size: 16px;
     text-transform: capitalize;
-    font-weight: 500;
+    font-weight: 600;
     margin-bottom: 12px;
     /* position: absolute; */
     /* top: ${(props) => (props.value ? "6px" : "15px")}; */

@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom";
 import IconBallonMessage from "../../assets/icons/IconBallonMessage";
 import IconCancel from "../../assets/icons/IconCancel";
 import ButtonDefault from "../../components/form/ButtonDefault";
+import ButtonLinear from "../../components/form/ButtonLinear";
 import ButtonNotification from "../../components/form/ButtonNotification";
 import InputDefault from "../../components/form/InputDefault";
 import Modal from "../../components/form/Modal";
@@ -17,19 +18,19 @@ import {
   SectionPagination,
 } from "./styles";
 
-export default function Home() {
+export default function MyRequests() {
   const history = useHistory()
   const [modal, setModal] = useState(false);
 
   return (
     <Container>
       <SectionFilter>
-        <h1>Pedidos</h1>
+        <h1>Meus Pedidos</h1>
 
         <Filter>
           <SelectDefault
             value=""
-            placeholder="Conteúdo"
+            placeholder="Status"
             onChangeText={value => console.log(value)}
           >
             <option value="Placeholder maneiro">Conteúdo</option>
@@ -47,39 +48,35 @@ export default function Home() {
             <option value="Impedimento">Impedimento</option>
             <option value="Todos">Todos</option>
           </SelectDefault>
-          <SelectDefault
-            value=""
-            placeholder="Filtrar por Quantidade"
-            onChangeText={value => console.log(value)}
-          >
-            <option value="Filtrar por Quantidade">Conteúdo</option>
-            <option value="Pendente">Pendente</option>
-            <option value="Impedimento">Impedimento</option>
-            <option value="Todos">Todos</option>
-          </SelectDefault>
+
+          <Separator />
+
+          <ContentSearch>
+            <InputDefault
+              onChangeText={value => console.log(value)}
+              value={""}
+              search={true}
+              placeholder={"Busca com icone"}
+            />
+
+            <Separator />
+
+            <ButtonDefault 
+              status="Concluido"
+              text="Fazer novo Pedido"
+            />
+          </ContentSearch>
         </Filter>
 
-        <Separator />
 
-        <ContentSearch>
-          <InputDefault
-            onChangeText={value => console.log(value)}
-            value={""}
-            search={true}
-            placeholder={"Busca com icone"}
-          />
-        </ContentSearch>
       </SectionFilter>
 
       <SectionTable>
         <table>
           <thead>
             <tr>
-              <th>Usuario</th>
-              <th>Unidade</th>
-              <th>Setor</th>
               <th>Pedido</th>
-              <th>Qtd. Pagínas</th>
+              <th>Qtd. de Páginas</th>
               <th>Qtd. Cópias</th>
               <th>Valor Total</th>
               <th>Data do pedido</th>
@@ -91,16 +88,13 @@ export default function Home() {
           <tbody>
             {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((row, key) => (
               <tr key={key} onClick={() => history.push(`/pedido/${key}`)}>
-                <td>Cristiano Ronaldo</td>
-                <td>Codigo Santa Helena</td>
-                <td>Setor A</td>
                 <td>Apostila 01</td>
                 <td>250</td>
                 <td>X5</td>
                 <td>R$150,00</td>
                 <td>01/01/2020</td>
                 <td>
-                  <ButtonDefault
+                  <ButtonLinear
                     status="Pendente"
                     border={true}
                     text="Pendente"

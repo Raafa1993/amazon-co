@@ -11,12 +11,19 @@ export const Main = styled.div`
     flex: 1;
     overflow-y: scroll;
     width: 100%;
-    padding: 0 40px;
+    height: 100vh;
+    /* padding: 0 40px;
     padding-top: 40px;
-    background: #F2F5FC;
+    background: #F2F5FC; */
 
     overflow-y: scroll;
     ::-webkit-scrollbar {
         display: none;
+    }
+
+    >div {
+        /* background: #F2F5FC; */
+        /* padding: 40px; */
+        /* height: 100vh; */
     }
 `;

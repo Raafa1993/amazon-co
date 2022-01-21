@@ -5,8 +5,10 @@ import React, {
   useState,
 } from "react";
 import { IconBaseProps } from "react-icons";
+import IconArrowDownload from "../../../assets/icons/IconArrowDownload";
+import IconDownload from "../../../assets/icons/IconDownload";
 
-import { Container, Error } from "./styles";
+import { Container, Label } from "./styles";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
@@ -22,7 +24,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   };
 }
 
-export default function Input({
+export default function InputFile({
   name,
   label,
   value,
@@ -46,30 +48,26 @@ export default function Input({
   }, []);
 
   return (
-    <Container value={value} isField={isField} isFocused={isFocused}>
-      <label htmlFor={name}>{label}</label>
+    <Label htmlFor={name}>{label}
+      <Container value={value} isField={isField} isFocused={isFocused}>
 
-      <input
-        onFocus={handleInputFocus}
-        onBlur={handleInputBlur}
-        ref={inputRef}
-        // disabled={isDisabled}
-        id={name}
-        name={name}
-        {...rest}
-      />
+        <div className="iconInput">
+          <IconDownload />
+        </div>
 
-      {Icon && (
-        <button type="button" onClick={handleOnPassword}>
-          <Icon size={20} />
-        </button>
-      )}
+        <input
+          onFocus={handleInputFocus}
+          onBlur={handleInputBlur}
+          type='file'
+          ref={inputRef}
+          {...rest}
+        />
 
-      {error?.error && (
-        <Error>
-          <span>{error.message}</span>
-        </Error>
-      )}
-    </Container>
+        <div className="iconInput">
+          <IconArrowDownload />
+        </div>
+
+      </Container>
+    </Label>
   );
 }

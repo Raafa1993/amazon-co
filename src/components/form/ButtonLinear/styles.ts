@@ -14,26 +14,36 @@ export const Container = styled.button<PropsButton>`
   font-size: 1rem;
   font-weight: bold;
   white-space: nowrap;
-  color: #fff;
   border: none;
-  /* border-radius: 25px; */
   padding: 10px 40px;
   transition: filter 0.3s;
   cursor: pointer;
   &:hover {
     filter: brightness(0.9);
   }
-
+  
   ${props => props.border && css`
-    border-radius: 25px;
+  border-radius: 25px;
   `}
-
-  background: ${props =>
+  
+  background: transparent;
+  
+  color: ${props =>
     props.status === "Pendente"
       ? "#9D54BB"
       : "#fff" && props.status === "Concluido"
       ? "#51C4AF"
       : "#fff" && props.status === "Cancelado"
       ? "#D9538D"
+      : "#fff" };
+
+
+  border: ${props =>
+    props.status === "Pendente"
+      ? " 1px solid #9D54BB"
+      : "#fff" && props.status === "Concluido"
+      ? " 1px solid #51C4AF"
+      : "#fff" && props.status === "Cancelado"
+      ? " 1px solid #D9538D"
       : "#fff" };
 `;

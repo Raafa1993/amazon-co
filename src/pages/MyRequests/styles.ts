@@ -26,20 +26,18 @@ export const Filter = styled.div`
   align-items: center;
   justify-content: flex-end;
   gap: 22px;
-  flex: 1;
 `;
 
 export const Separator = styled.div`
   width: 1px;
   height: 34px;
-  background: #f2f5fc;
-  margin: 0 32px;
+  background: var(--gray);
+  margin: 0 22px;
 `;
 
 export const ContentSearch = styled.div`
   display: flex;
   align-items: center;
-  width: 25%;
 `;
 
 export const SectionTable = styled.div`
