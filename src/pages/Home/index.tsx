@@ -6,6 +6,7 @@ import ButtonDefault from "../../components/form/ButtonDefault";
 import ButtonNotification from "../../components/form/ButtonNotification";
 import InputDefault from "../../components/form/InputDefault";
 import Modal from "../../components/form/Modal";
+import Pagination from "../../components/form/Pagination";
 import SelectDefault from "../../components/form/SelectDefault";
 import {
   Container,
@@ -15,17 +16,25 @@ import {
   ContentSearch,
   SectionTable,
   SectionPagination,
+  PaginationButton,
+  PaginationItem,
+  ButtonPagination,
 } from "./styles";
 
+const limit = 9;
+
 export default function Home() {
-  const history = useHistory()
+  const history = useHistory();
   const [modal, setModal] = useState(false);
+
+  const [total, setTotal] = useState(0);
+  const [pages, setPages] = useState([0,1,2,3,4]);
+  const [currentPage, setCurrentPage] = useState(0);
 
   return (
     <Container>
       <SectionFilter>
-        <h1>Pedidos</h1>
-
+        <h1 className="TitleHome">Pedidos</h1>
         <Filter>
           <SelectDefault
             value=""
@@ -90,7 +99,7 @@ export default function Home() {
           </thead>
           <tbody>
             {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((row, key) => (
-              <tr key={key} onClick={() => history.push(`/pedido/${key}`)}>
+              <tr key={key}>
                 <td>Cristiano Ronaldo</td>
                 <td>Codigo Santa Helena</td>
                 <td>Setor A</td>
@@ -104,6 +113,7 @@ export default function Home() {
                     status="Pendente"
                     border={true}
                     text="Pendente"
+                    onClick={() => history.push(`/pedido/${key}`)}
                   />
                 </td>
                 <td className="buttonIcons">
@@ -112,7 +122,7 @@ export default function Home() {
                     onClick={() => setModal(!modal)}
                   />
                 </td>
-                <td className="buttonIcons">
+                <td>
                   <ButtonNotification
                     icon={<IconCancel />}
                     onClick={() => setModal(!modal)}
@@ -125,7 +135,34 @@ export default function Home() {
       </SectionTable>
 
       <SectionPagination>
-        <h1>Paginação</h1>
+          <PaginationButton>
+            <ButtonPagination
+              type="button"
+              onClick={() => setCurrentPage(currentPage - 1)}
+              disabled={currentPage < 1}
+              isActive={currentPage < 1}
+            >
+              Voltar
+            </ButtonPagination>
+            {pages.map(page => (
+              <PaginationItem
+                isSelect={page === currentPage}
+                key={page}
+                onClick={() => setCurrentPage(page)}
+                disabled={page === currentPage}
+              >
+                {page + 1}
+              </PaginationItem>
+            ))}
+            <ButtonPagination
+              type="button"
+              onClick={() => setCurrentPage(currentPage + 1)}
+              disabled={currentPage === pages.length - 1}
+              isActive={currentPage === pages.length - 1}
+            >
+              Avançar
+            </ButtonPagination>
+          </PaginationButton>
       </SectionPagination>
 
       <Modal

@@ -7,6 +7,7 @@ import ButtonLinear from "../../components/form/ButtonLinear";
 import ButtonNotification from "../../components/form/ButtonNotification";
 import InputDefault from "../../components/form/InputDefault";
 import Modal from "../../components/form/Modal";
+import { ButtonPagination, PaginationButton, PaginationItem } from "../../components/form/Pagination/styles";
 import SelectDefault from "../../components/form/SelectDefault";
 import {
   Container,
@@ -22,11 +23,15 @@ export default function MyRequests() {
   const history = useHistory()
   const [modal, setModal] = useState(false);
 
+  const [total, setTotal] = useState(0);
+  const [pages, setPages] = useState([0,1,2,3,4]);
+  const [currentPage, setCurrentPage] = useState(0);
+
   return (
     <Container>
       <SectionFilter>
-        <h1>Meus Pedidos</h1>
 
+        <h1 className="titleMyRequest">Meus Pedidos</h1>
         <Filter>
           <SelectDefault
             value=""
@@ -38,6 +43,7 @@ export default function MyRequests() {
             <option value="Impedimento">Impedimento</option>
             <option value="Todos">Todos</option>
           </SelectDefault>
+
           <SelectDefault
             value=""
             placeholder="Mais recente"
@@ -51,23 +57,23 @@ export default function MyRequests() {
 
           <Separator />
 
-          <ContentSearch>
-            <InputDefault
-              onChangeText={value => console.log(value)}
-              value={""}
-              search={true}
-              placeholder={"Busca com icone"}
-            />
-
-            <Separator />
-
-            <ButtonDefault 
-              status="Concluido"
-              text="Fazer novo Pedido"
-            />
-          </ContentSearch>
         </Filter>
 
+        {/* <ContentSearch>
+        </ContentSearch> */}
+        <InputDefault
+          onChangeText={value => console.log(value)}
+          value={""}
+          search={true}
+          placeholder={"Busca com icone"}
+        />
+
+        <Separator />
+
+        <ButtonDefault 
+          status="Concluido"
+          text="Fazer novo Pedido"
+        />
 
       </SectionFilter>
 
@@ -87,7 +93,7 @@ export default function MyRequests() {
           </thead>
           <tbody>
             {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((row, key) => (
-              <tr key={key} onClick={() => history.push(`/pedido/${key}`)}>
+              <tr key={key}>
                 <td>Apostila 01</td>
                 <td>250</td>
                 <td>X5</td>
@@ -98,15 +104,16 @@ export default function MyRequests() {
                     status="Pendente"
                     border={true}
                     text="Pendente"
+                    onClick={() => history.push(`/meus-pedidos/${key}`)}
                   />
                 </td>
-                <td className="buttonIcons">
+                <td>
                   <ButtonNotification
                     icon={<IconBallonMessage />}
                     onClick={() => setModal(!modal)}
                   />
                 </td>
-                <td className="buttonIcons">
+                <td>
                   <ButtonNotification
                     icon={<IconCancel />}
                     onClick={() => setModal(!modal)}
@@ -119,7 +126,34 @@ export default function MyRequests() {
       </SectionTable>
 
       <SectionPagination>
-        <h1>Paginação</h1>
+          <PaginationButton>
+            <ButtonPagination
+              type="button"
+              onClick={() => setCurrentPage(currentPage - 1)}
+              disabled={currentPage < 1}
+              isActive={currentPage < 1}
+            >
+              Voltar
+            </ButtonPagination>
+            {pages.map(page => (
+              <PaginationItem
+                isSelect={page === currentPage}
+                key={page}
+                onClick={() => setCurrentPage(page)}
+                disabled={page === currentPage}
+              >
+                {page + 1}
+              </PaginationItem>
+            ))}
+            <ButtonPagination
+              type="button"
+              onClick={() => setCurrentPage(currentPage + 1)}
+              disabled={currentPage === pages.length - 1}
+              isActive={currentPage === pages.length - 1}
+            >
+              Avançar
+            </ButtonPagination>
+          </PaginationButton>
       </SectionPagination>
 
       <Modal

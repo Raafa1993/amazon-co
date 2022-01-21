@@ -1,23 +1,43 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+
+interface Props {
+  isActive?: boolean;
+  isSelect?: boolean;
+}
 
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  background: #F2F5FC;
+  background: #f2f5fc;
   padding: 40px;
-
 `;
 
 export const SectionFilter = styled.div`
-  display: flex;
+  /* display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-between; */
+  display: grid;
+  grid-template-columns: 15% 60% 5% 20%;
+  align-items: center;
+  transition: all 0.2s;
 
-  h1 {
+  .TitleHome {
     font-size: 30px;
     font-weight: bold;
     color: var(--darkBlack);
+  }
+
+  @media (max-width: 980px) {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "tt sr"
+      "ft ft";
+    gap: 22px;
+
+    .TitleHome {
+      grid-area: tt;
+    }
   }
 `;
 
@@ -26,29 +46,68 @@ export const Filter = styled.div`
   align-items: center;
   justify-content: flex-end;
   gap: 22px;
-  flex: 1;
+
+  @media (max-width: 980px) {
+    grid-area: ft;
+  }
+  transition: all 0.2s;
 `;
 
 export const Separator = styled.div`
   width: 1px;
   height: 34px;
   background: #f2f5fc;
-  margin: 0 32px;
+
+  @media (max-width: 980px) {
+    display: none;
+  }
 `;
 
 export const ContentSearch = styled.div`
   display: flex;
   align-items: center;
-  width: 25%;
+
+  @media (max-width: 980px) {
+    grid-area: sr;
+  }
+  transition: all 0.2s;
 `;
 
 export const SectionTable = styled.div`
   display: flex;
   flex-direction: column;
   gap: 15px;
-  width: 100%;
 
   margin-top: 60px;
+  padding: 0 12px;
+  margin-left: -12px;
+  margin-right: -12px;
+
+  @media (max-width: 1460px) {
+    overflow-x: scroll;
+
+    ::-webkit-scrollbar {
+      /* width: 5px; */
+      height: 6px;
+      background-color: #f5f5f5;
+    }
+    ::-webkit-scrollbar-thumb {
+      background-color: var(--green);
+      border-radius: 20px;
+    }
+    ::-webkit-scrollbar-track {
+      -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+      background-color: #f5f5f5;
+    }
+
+    scrollbar-color: var(--green) transparent;
+    scrollbar-width: thin;
+  }
+
+  @media (max-width: 980px) {
+    margin-top: 40px;
+  }
 
   table {
     width: 100%;
@@ -72,8 +131,9 @@ export const SectionTable = styled.div`
           white-space: nowrap;
           font-size: 16px;
           font-weight: normal;
-        }
 
+        }
+        
         transition: all 0.3s;
       }
       tr {
@@ -89,13 +149,63 @@ export const SectionTable = styled.div`
 export const SectionPagination = styled.div`
   display: flex;
   align-items: center;
-  width: 100%;
-  height: 60px;
-
   margin-top: 20px;
-  padding: 40px 0;
+`;
 
-  h1 {
-    font-size: 1rem;
+export const PaginationButton = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+export const PaginationItem = styled.button<Props>`
+  display: grid;
+  place-items: center;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--darkGray);
+
+  background: transparent;
+  padding: .375rem;
+  border-radius: .2rem;
+
+  border: none;
+  transition: filter 0.3s;
+  &:hover {
+    transition: all 0.3s;
+    filter: brightness(0.9);
+    background: rgba(10, 191, 158, 0.1);
+    color: var(--green);
   }
+
+  ${(props) =>
+    props.isSelect && css`
+      background: rgba(10, 191, 158, 0.1);
+      color: var(--green);
+      border: 0;
+    `};
+    
+  ${(props) =>
+    props.isActive && {
+      background: "#bfbfcc",
+      color: "#E1E3E5",
+    }};
+`;
+
+export const ButtonPagination = styled.button<Props>`
+  display: grid;
+  place-items: center;
+
+  background: transparent;
+  border: none;
+  padding: .8rem;
+  
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--darkGray);
+
+  ${props => props.isActive && css`
+      cursor: not-allowed;
+      opacity: 0.4;
+  `}
 `;

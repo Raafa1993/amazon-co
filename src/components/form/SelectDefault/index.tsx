@@ -9,11 +9,13 @@ interface InputProps extends React.HTMLAttributes<HTMLInputElement> {
   onChangeText: (value: string) => void;
   search?: boolean;
   style?: any;
+  ronded?: boolean;
 }
 
 export default function SelectDefault({
   placeholder,
   value,
+  ronded,
   onChangeText,
   children,
 }: InputProps) {
@@ -29,8 +31,11 @@ export default function SelectDefault({
   }
 
   return (
-    <Container className="form-children-default select">
-      <select value={valueInput} onChange={handleOnChange}>
+    <Container ronded={ronded} className="form-children-default select">
+      <select 
+        value={valueInput}
+        onChange={handleOnChange}
+      >
         {placeholder && (
           <option value="" disabled={true}>
             {placeholder}

@@ -1,6 +1,10 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
-export const Container = styled.div`
+interface Props {
+  ronded?: boolean;
+}
+
+export const Container = styled.div<Props>`
   display: flex;
   align-items: center;
   width: 220px;
@@ -12,6 +16,11 @@ export const Container = styled.div`
   &:active {
     border: 1px solid #E4E4E4;
   }
+
+  ${props => props.ronded && css`
+    border-radius: 0;
+  `}
+
   select {
     padding: 0px 51px 0px 21px;
     height: 100%;

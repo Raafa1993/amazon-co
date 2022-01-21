@@ -11,15 +11,14 @@ export const Container = styled.div<sidebarProps>`
   justify-content: space-between;
 
   width: 100%;
-  height: 110px;
-  padding: 0 40px;
-
+  padding: 20px 40px;
+  position: relative;
 `;
 
 export const Ul = styled.ul<sidebarProps>`
   display: flex;
   align-items: center;
-  gap: 80px;
+  gap: 20px;
 `;
 
 export const Li = styled.li<sidebarProps>`
@@ -27,15 +26,15 @@ export const Li = styled.li<sidebarProps>`
   align-items: center;
   justify-content: flex-start;
   position: relative;
-  
+
   a {
-      display: flex;
-      align-items: center;
-      padding: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
   }
 
   span {
-    font-size: 20px;
+    font-size: 1.25rem;
     font-weight: bold;
     color: var(--gray);
     white-space: nowrap;
@@ -53,9 +52,9 @@ export const Li = styled.li<sidebarProps>`
       &::after {
         position: absolute;
         content: "";
-        top: 75px;
+        top: 52px;
         left: 0;
-        width: 90px;
+        width: 60px;
         height: 5px;
         border-radius: 2px;
         background: var(--green);
@@ -64,17 +63,16 @@ export const Li = styled.li<sidebarProps>`
 `;
 
 export const ContentRight = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const Separator = styled.div`
-    width: 1px;
-    height: 34px;
-    background: var(--green);
-    margin: 0 30px;
+  width: 1px;
+  height: 34px;
+  background: var(--green);
+  margin: 0 30px;
 `;
 
 export const Profile = styled.button`
@@ -99,21 +97,21 @@ export const Image = styled.div`
 `;
 
 export const Info = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 12px;
+
+  h2 {
+    font-size: 18px;
+    color: #51c4af;
+    font-weight: normal;
+  }
+
+  svg {
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+
     margin-left: 12px;
-
-    h2 {
-        font-size: 18px;
-        color: #51C4AF;
-        font-weight: normal;
-    }
-
-    svg {
-        transform: rotate(-90deg);
-        transform-origin: 50% 50%;
-
-        margin-left: 12px;
-    }
+  }
 `;

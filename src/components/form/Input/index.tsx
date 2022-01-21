@@ -12,7 +12,6 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
   label: string;
   value: string;
-  isDisabled?: boolean;
   handleOnPassword?: () => void;
   Icon?: React.ComponentType<IconBaseProps>;
   error?: {
@@ -27,7 +26,6 @@ export default function Input({
   label,
   value,
   Icon,
-  isDisabled,
   error,
   handleOnPassword,
   ...rest
@@ -53,7 +51,6 @@ export default function Input({
         onFocus={handleInputFocus}
         onBlur={handleInputBlur}
         ref={inputRef}
-        // disabled={isDisabled}
         id={name}
         name={name}
         {...rest}

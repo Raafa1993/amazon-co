@@ -11,7 +11,7 @@ export const Container = styled.div<Props>`
   width: 100%;
   background: transparent;
   border-radius: 8px;
-  color: #6c6c80;
+  color: var(--darkBlack);
   display: flex;
   flex-direction: column;
   position: relative;
@@ -69,6 +69,7 @@ export const Container = styled.div<Props>`
     text-transform: capitalize;
     font-weight: 600;
     margin-bottom: 12px;
+    color: var(--darkLabel);
     /* position: absolute; */
     /* top: ${(props) => (props.value ? "6px" : "15px")}; */
     /* font-size: ${(props) => (props.value ? "10px" : "16px")}; */
