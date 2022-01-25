@@ -46,11 +46,6 @@ export const Container = styled.div<Props>`
     ${props => props.isFocused && css`
       border: 1px solid var(--green);
     `}
-
-    /* ${props => props.isDisabled && css`
-      cursor: not-allowed;
-    `} */
-
   }
 
   button {
@@ -70,9 +65,10 @@ export const Container = styled.div<Props>`
     font-weight: 600;
     margin-bottom: 12px;
     color: var(--darkLabel);
-    /* position: absolute; */
-    /* top: ${(props) => (props.value ? "6px" : "15px")}; */
-    /* font-size: ${(props) => (props.value ? "10px" : "16px")}; */
+
+    ${props => props.isFocused && css`
+      color: var(--green);
+    `}
   }
 `;
 
@@ -80,7 +76,7 @@ export const Error = styled.div`
   display: flex;
   position: absolute;
   right: 0;
-  top: -22px;
+  top: 0px;
   * {
     animation: fadeInUp 0.4s linear;
   }

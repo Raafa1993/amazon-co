@@ -1,12 +1,15 @@
-import React, { useRef, useState } from "react";
-import ArteLogin from "../../assets/images/ArteLogin.png";
-import LogoAmazon from "../../assets/icons/LogoAmazon";
-import BgLogin from "../../assets/images/Bglogin.png";
-import Input from "../../components/form/Input";
-import IconEye from "../../assets/icons/IconEye";
-import ButtonSubmit from "../../components/form/ButtonSubmit";
-import InputRadioDefault from "../../components/form/InputRadioDefault";
+import React, { useCallback, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
+import Input from "../../components/form/Input";
+import ButtonSubmit from "../../components/form/ButtonSubmit";
+import Radio from "../../components/form/Radio";
+import { useAuth } from "../../hooks/AuthContext";
+
+import IconEye from "../../assets/icons/IconEyeClose";
+import LogoAmazon from "../../assets/icons/LogoAmazon";
+
+import BgLogin from "../../assets/images/Bglogin.png";
+import ArteLogin from "../../assets/images/ArteLogin.png";
 
 import {
   Container,
@@ -21,31 +24,68 @@ import {
   ContentForm,
   NotRegister,
 } from "./styles";
-import Radio from "../../components/form/Radio";
 
 interface SignInFormData {
-  login: string;
-  password: string;
+  email: string;
+  senha: string;
+}
+
+interface Errors {
+  error: boolean;
+  message: string;
+  name: string;
 }
 
 export default function SignIn() {
   const formRef = useRef(null);
   const history = useHistory();
-  const [inputRadio, setInputRadio] = useState<string>("grafica");
+  const { signIn, setTypeInt, typeInt, user } = useAuth()
+  
+  const [load, setLoad] = useState(false);
+  const [error, setError] = useState<Errors>();
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [formData, setFormData] = useState<SignInFormData>({
-    login: "",
-    password: "",
+    email: "",
+    senha: "",
   });
+
+  console.log(user)
 
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
   }
 
-  function handleSubmit(event: any) {
-    event.preventDefault();
-  }
+  const handleSubmit = useCallback(async (event: any) => {
+    try {
+      event.preventDefault();
+      setLoad(true)
+
+      const { email, senha } = formData;
+      const data = {
+        email,
+        senha,
+      };
+
+      await signIn({
+        email: data.email,
+        senha: data.senha,
+      })
+      setLoad(false)
+      history.push('/home')
+
+    } catch(err: any) {
+      console.log(err)
+      setTimeout(() => {
+        setError({
+          error: true,
+          message: err.message,
+          name: err.name,
+        });
+        setLoad(false)
+      }, 1000);
+    }
+  }, [signIn, formData])
 
   return (
     <Container>
@@ -72,15 +112,15 @@ export default function SignIn() {
                 options={[
                   {
                     label: "Usúario",
-                    value: "usuario",
+                    value: "/login",
                   },
                   {
                     label: "Grafíca",
-                    value: "grafica",
+                    value: "/login-grafica",
                   },
                 ]}
-                value={inputRadio}
-                onChange={value => setInputRadio(value)}
+                value={typeInt}
+                onChange={value => setTypeInt(value)}
               />
             </RadioOption>
           </OptionUser>
@@ -89,37 +129,42 @@ export default function SignIn() {
             <form ref={formRef} onSubmit={handleSubmit}>
               <div className="field">
                 <Input
-                  value={formData.login}
+                  value={formData.email}
                   type="text"
-                  name="login"
+                  name="email"
                   label="login"
                   onChange={handleInputChange}
+                  error={error}
                 />
 
                 <Input
-                  value={formData.password}
+                  value={formData.senha}
                   type={passwordVisible ? "text" : "password"}
-                  name="password"
+                  name="senha"
                   label="password"
                   Icon={IconEye}
                   onChange={handleInputChange}
                   handleOnPassword={() => setPasswordVisible(!passwordVisible)}
                 />
 
-                <button className="forgotPassword" type="button">
+                <button 
+                  className="forgotPassword" 
+                  type="button"
+                  onClick={() => history.push("/recuperar-senha")}
+                >
                   Esquecia a senha
                 </button>
 
                 <ButtonSubmit
                   type="submit"
-                  onClick={() => history.push("/home")}
+                  loading={load}
                 >
                   Entrar
                 </ButtonSubmit>
               </div>
             </form>
 
-            <NotRegister isUser={inputRadio === "usuario"}>
+            <NotRegister isUser={typeInt === "/login"}>
               <span>
                 Não é cadastrado?
                 <button

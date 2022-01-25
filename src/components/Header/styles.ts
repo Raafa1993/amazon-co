@@ -3,6 +3,7 @@ import styled, { css } from "styled-components";
 interface sidebarProps {
   active?: boolean;
   mentions?: number;
+  hasVisible?: boolean;
 }
 
 export const Container = styled.div<sidebarProps>`
@@ -82,6 +83,8 @@ export const Profile = styled.button`
 
   border: none;
   background: transparent;
+
+  position: relative;
 `;
 
 export const Image = styled.div`
@@ -96,7 +99,7 @@ export const Image = styled.div`
   }
 `;
 
-export const Info = styled.div`
+export const Info = styled.div<sidebarProps>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -111,7 +114,58 @@ export const Info = styled.div`
   svg {
     transform: rotate(-90deg);
     transform-origin: 50% 50%;
+    transition: all 0.35s;
 
     margin-left: 12px;
+
+    ${props => props.hasVisible && css`
+      transform: rotate(90deg);
+      transform-origin: 50% 50%;
+    `}
   }
+
 `;
+
+export const MenuProfile = styled.div<sidebarProps>`
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  padding: 12px;
+
+  background: #fff;
+  box-shadow: 0px 10px 6px #00000029;
+
+  position: absolute;
+  transform: translateY(0px);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.35s;
+
+  ${props => props.hasVisible && css`
+    transform: translateY(60px);
+    opacity: 1;
+    visibility: visible;
+    transition: all 0.35s;
+  `}
+
+  .buttonSignUp {
+    display: flex;
+    align-items: center;
+
+    padding: 4px;
+    border: none;
+    background: transparent;
+
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: var(--darkBlack);
+
+    svg {
+      margin-right: 58px;
+      path {
+        stroke: var(--darkBlack);
+      }
+    }
+  }
+`

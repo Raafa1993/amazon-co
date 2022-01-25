@@ -83,7 +83,7 @@ export const SectionTable = styled.div`
   margin-left: -12px;
   margin-right: -12px;
 
-  @media (max-width: 1000px) {
+  @media (max-width: 1260px) {
     overflow-x: scroll;
 
     ::-webkit-scrollbar {

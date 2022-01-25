@@ -35,6 +35,8 @@ export const Container = styled.button<PropsButton>`
       ? "#51C4AF"
       : "#fff" && props.status === "Cancelado"
       ? "#D9538D"
+      : "#fff" && props.status === "Visualizar"
+      ? "#5178C4"
       : "#fff" };
 
 
@@ -45,5 +47,7 @@ export const Container = styled.button<PropsButton>`
       ? " 1px solid #51C4AF"
       : "#fff" && props.status === "Cancelado"
       ? " 1px solid #D9538D"
+      : "#fff" && props.status === "Visualizar"
+      ? " 1px solid #5178C4"
       : "#fff" };
 `;

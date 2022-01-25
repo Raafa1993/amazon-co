@@ -23,6 +23,10 @@ export const Form = styled.form`
   width: 40%;
   margin-top: 60px;
 
+  @media(max-width: 680px) {
+    margin-top: 24px;
+  }
+
   h2 {
     font-size: 1.25rem;
     font-weight: bold;
@@ -87,6 +91,10 @@ export const BackToHome = styled.div`
 
   width: 36%;
   background: #fff;
+
+  @media(max-width: 680px) {
+    width: 100%;
+  }
 
   .backHome {
     display: flex;

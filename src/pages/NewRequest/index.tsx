@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import IconArrowLeft from '../../assets/icons/IconArrowLeft';
-import IconEye from '../../assets/icons/IconEye';
+import IconEye from '../../assets/icons/IconEyeClose';
 import ButtonDefault from '../../components/form/ButtonDefault';
 import Input from '../../components/form/Input';
 import InputFile from '../../components/form/InputFile';

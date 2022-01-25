@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useHistory } from "react-router-dom";
 import IconBallonMessage from "../../assets/icons/IconBallonMessage";
 import IconCancel from "../../assets/icons/IconCancel";
+import IconEyer from "../../assets/icons/IconEyer";
 import ButtonDefault from "../../components/form/ButtonDefault";
 import ButtonNotification from "../../components/form/ButtonNotification";
 import InputDefault from "../../components/form/InputDefault";
@@ -84,6 +85,7 @@ export default function Home() {
         <table>
           <thead>
             <tr>
+              <th>Visualizar</th>
               <th>Usuario</th>
               <th>Unidade</th>
               <th>Setor</th>
@@ -100,6 +102,15 @@ export default function Home() {
           <tbody>
             {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((row, key) => (
               <tr key={key}>
+                <td>
+                  <ButtonDefault
+                    status="Visualizar"
+                    border={true}
+                    text="Visualizar"
+                    // icon={<IconEyer />}
+                    onClick={() => history.push(`/pedido/${key}`)}
+                  />
+                </td>
                 <td>Cristiano Ronaldo</td>
                 <td>Codigo Santa Helena</td>
                 <td>Setor A</td>
@@ -113,7 +124,6 @@ export default function Home() {
                     status="Pendente"
                     border={true}
                     text="Pendente"
-                    onClick={() => history.push(`/pedido/${key}`)}
                   />
                 </td>
                 <td className="buttonIcons">

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import IconAlert from "../../assets/icons/IconAlert";
 import IconArrowLeft from "../../assets/icons/IconArrowLeft";
@@ -12,6 +13,7 @@ import {
     Profile,
     Image,
     Info,
+    MenuProfile,
 } from "./styles";
 
 interface IMenu {
@@ -26,6 +28,7 @@ interface IMenu {
   }
 
 export default function Header({ menus, path }: ISiderbar) {
+  const [hasVisible, setHasVisible] = useState(false)
   return (
     <Container>
       <Ul>
@@ -46,14 +49,26 @@ export default function Header({ menus, path }: ISiderbar) {
 
           <Separator />
 
-          <Profile>
+          <Profile
+            onClick={() => setHasVisible(!hasVisible)}
+          >
             <Image>
                 <img src="https://avatars.githubusercontent.com/u/37309024?v=4" alt="profile" />
             </Image>
-            <Info>
+            <Info hasVisible={hasVisible}>
                 <h2>Rafael Araujo</h2>
                 <IconArrowLeft />
             </Info>
+
+            <MenuProfile
+              hasVisible={hasVisible}
+            >
+              <button className="buttonSignUp">
+                <IconArrowLeft />
+                Sair
+              </button>
+            </MenuProfile>
+
           </Profile>
       </ContentRight>
     </Container>

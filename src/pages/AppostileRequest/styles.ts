@@ -16,10 +16,11 @@ export const Content = styled.div`
   background: #F2F5FC;
   padding: 40px;
 
-    /* @media(max-width: 680px) {
-      width: 100%;
-    } */
+  @media(max-width: 680px) {
+    grid-template-columns: 1fr;
 
+    width: 100%;
+  }
 `;
 
 export const PanelLeft = styled.div`
@@ -42,6 +43,10 @@ export const Form = styled.form`
     font-size: 1.25rem;
     font-weight: bold;
     color: var(--darkBlack);
+  }
+
+  @media(max-width: 680px) {
+    margin-top: 24px;
   }
 
   .field {
@@ -67,6 +72,12 @@ export const PanelRight = styled.div`
     color: var(--darkBlack);
     margin-bottom: 40px;
   }
+
+  @media(max-width: 680px) {
+    border-left: 0;
+    padding-left: 0;
+    margin-top: 0;
+  }
 `;
 
 export const BackToHome = styled.div`
@@ -78,6 +89,10 @@ export const BackToHome = styled.div`
 
   width: 36%;
   background: #fff;
+
+  @media(max-width: 680px) {
+    width: 100%;
+  }
 
   .backHome {
     display: flex;

@@ -1,11 +1,12 @@
-import React, { useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import ArteLogin from "../../assets/images/ArteLogin.png";
 import LogoAmazon from "../../assets/icons/LogoAmazon";
 import BgLogin from "../../assets/images/Bglogin.png";
 import Input from "../../components/form/Input";
 import ButtonSubmit from "../../components/form/ButtonSubmit";
-import InputRadioDefault from "../../components/form/InputRadioDefault";
 import { useHistory } from "react-router-dom";
+import * as Yup from "yup";
+import getVaidationErrors from "../../Utils/getValidationErrors";
 
 import IconArrowLeft from "../../assets/icons/IconArrowLeft";
 import {
@@ -16,36 +17,42 @@ import {
   ContentSignIn,
   Contentinfo,
   WellcomeSignIn,
-  OptionUser,
-  RadioOption,
   ContentForm,
   BackToPage,
 } from "./styles";
+import api from "../../services/api";
 
 interface SignInFormData {
-  name: string;
-  phone: string;
+  nome: string;
   email: string;
+  telefone: string;
   unidade: string;
   setor: string;
-  id: string;
-  password: string;
-  confirmPassword: string;
+  id_endereco: string;
+  senha: string;
+  confirmar_senha: string;
+}
+
+interface Errors {
+  error: boolean;
+  message: string;
+  name: string;
 }
 
 export default function SignInUp() {
   const formRef = useRef(null);
   const history = useHistory();
-  const [inputRadio, setInputRadio] = useState<string>("group");
+  const [load, setLoad] = useState(false);
+  const [error, setError] = useState<Errors>();
   const [formData, setFormData] = useState<SignInFormData>({
-    name: "",
-    phone: "",
+    nome: "",
     email: "",
+    telefone: "",
     unidade: "",
     setor: "",
-    id: "",
-    password: "",
-    confirmPassword: "",
+    id_endereco: "",
+    senha: "",
+    confirmar_senha: "",
   });
 
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -53,9 +60,74 @@ export default function SignInUp() {
     setFormData({ ...formData, [name]: value });
   }
 
-  function handleSubmit(event: any) {
-    event.preventDefault();
-  }
+  const handleSubmit = useCallback(async (data: object) => {
+    try {
+      // formRef.current?.setErrors({});
+      setLoad(true)
+
+      const schema = Yup.object().shape({
+        name: Yup.string().required("Nome obrigatório"),
+        email: Yup.string()
+          .email("Digite um e-mail válido")
+          .required("E-mail obrigatório"),
+        password: Yup.string().min(6, "No mínimo 6 digitos"),
+      });
+
+      await schema.validate(data, {
+        abortEarly: false,
+      });
+
+      // const { 
+      //   nome,
+      //   email,
+      //   telefone,
+      //   unidade,
+      //   setor,
+      //   id_endereco,
+      //   senha,
+      //   confirmar_senha,
+      // } = formData;
+
+      // const data = {
+      //   nome,
+      //   email,
+      //   telefone,
+      //   unidade,
+      //   setor,
+      //   id_endereco,
+      //   senha,
+      //   confirmar_senha,
+      // };
+
+      // console.log(data)
+
+      
+      // const response = await api.post("/usuario", data);
+      
+      // console.log(response)
+
+      // if (response.data.status === "error") {
+      //   throw response.data.message;
+      // }
+
+      alert('Usuario cadastrado com sucesso')
+
+  
+      setLoad(false)
+      // history.push('/home')
+
+    } catch(err: any) {
+      if (err instanceof Yup.ValidationError) {
+        setLoad(false);
+
+        // const errors = getVaidationErrors(err);
+
+        // formRef.current?.setErrors(errors);
+
+        return;
+      }
+    }
+  }, [])
 
   return (
     <Container>
@@ -77,43 +149,27 @@ export default function SignInUp() {
               Preencha os dados abaixo para realizar o cadastro é rápido e fácil
             </span>
           </WellcomeSignIn>
-          <OptionUser>
-            <h2>Tipo de Instituição</h2>
-            <RadioOption>
-              <InputRadioDefault
-                options={[
-                  {
-                    label: "",
-                    value: "usuario",
-                  },
-                  {
-                    label: "",
-                    value: "grafica",
-                  },
-                ]}
-                value={inputRadio}
-                onChange={value => setInputRadio(value)}
-              />
-            </RadioOption>
-          </OptionUser>
 
           <ContentForm>
             <form ref={formRef} onSubmit={handleSubmit}>
               <div className="field">
                 <Input
-                  value={formData.name}
+                  value={formData.nome}
                   type="text"
-                  name="name"
+                  name="nome"
                   label="Nome do Usuário"
                   onChange={handleInputChange}
+                  error={error}
                 />
 
                 <Input
-                  value={formData.phone}
+                  value={formData.telefone}
                   type="text"
-                  name="phone"
+                  name="telefone"
+                  mask="fone"
                   label="Telefone"
                   onChange={handleInputChange}
+                  error={error}
                 />
 
                 <Input
@@ -122,6 +178,7 @@ export default function SignInUp() {
                   name="email"
                   label="E-mail"
                   onChange={handleInputChange}
+                  error={error}
                 />
 
                 <Input
@@ -130,6 +187,7 @@ export default function SignInUp() {
                   name="unidade"
                   label="Unidade"
                   onChange={handleInputChange}
+                  error={error}
                 />
 
                 <Input
@@ -138,33 +196,42 @@ export default function SignInUp() {
                   name="setor"
                   label="Setor"
                   onChange={handleInputChange}
+                  error={error}
                 />
 
                 <Input
-                  value={formData.id}
+                  value={formData.id_endereco}
                   type="text"
-                  name="id"
+                  name="id_endereco"
                   label="ID"
                   onChange={handleInputChange}
+                  error={error}
                 />
 
                 <Input
-                  value={formData.password}
-                  type="text"
-                  name="password"
+                  value={formData.senha}
+                  type="password"
+                  name="senha"
                   label="Senha"
                   onChange={handleInputChange}
+                  error={error}
                 />
 
                 <Input
-                  value={formData.confirmPassword}
+                  value={formData.confirmar_senha}
                   type="password"
-                  name="confirmPassword"
+                  name="confirmar_senha"
                   label="Confirmar senha"
                   onChange={handleInputChange}
+                  error={error}
                 />
 
-                <ButtonSubmit type="submit">Continuar</ButtonSubmit>
+                <ButtonSubmit 
+                  type="submit"
+                  loading={load}
+                >
+                    Continuar
+                </ButtonSubmit>
               </div>
             </form>
 

@@ -73,6 +73,7 @@ export default function MyRequests() {
         <ButtonDefault 
           status="Concluido"
           text="Fazer novo Pedido"
+          onClick={() => history.push('/novo-pedido')}
         />
 
       </SectionFilter>
@@ -81,6 +82,7 @@ export default function MyRequests() {
         <table>
           <thead>
             <tr>
+              <th>Visualizar</th>
               <th>Pedido</th>
               <th>Qtd. de Páginas</th>
               <th>Qtd. Cópias</th>
@@ -94,6 +96,15 @@ export default function MyRequests() {
           <tbody>
             {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((row, key) => (
               <tr key={key}>
+                <td>
+                  <ButtonDefault
+                    status="Visualizar"
+                    border={true}
+                    text="Visualizar"
+                    // icon={<IconEyer />}
+                    onClick={() => history.push(`/pedido/${key}`)}
+                  />
+                </td>
                 <td>Apostila 01</td>
                 <td>250</td>
                 <td>X5</td>

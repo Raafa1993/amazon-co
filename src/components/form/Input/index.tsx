@@ -5,6 +5,7 @@ import React, {
   useState,
 } from "react";
 import { IconBaseProps } from "react-icons";
+import { maskPhone, maskCEP, maskCPF, maskDate } from "./masks";
 
 import { Container, Error } from "./styles";
 
@@ -14,6 +15,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   value: string;
   handleOnPassword?: () => void;
   Icon?: React.ComponentType<IconBaseProps>;
+  mask?: string;
   error?: {
     error: boolean;
     message: string;
@@ -27,6 +29,7 @@ export default function Input({
   value,
   Icon,
   error,
+  mask,
   handleOnPassword,
   ...rest
 }: InputProps) {
@@ -43,6 +46,23 @@ export default function Input({
     setIsField(!!inputRef.current?.value);
   }, []);
 
+  const handleKeyUp = useCallback(e => {
+      if (mask === "cpf") {
+        maskCPF(e);
+      } else if (mask === "cep") {
+        maskCEP(e);
+      } else if (mask === "date") {
+        maskDate(e);
+      } else if (mask === "fone") {
+        maskPhone(e);
+      } else {
+        return;
+      }
+      return;
+    },
+    [mask],
+  );
+
   return (
     <Container value={value} isField={isField} isFocused={isFocused}>
       <label htmlFor={name}>{label}</label>
@@ -50,6 +70,7 @@ export default function Input({
       <input
         onFocus={handleInputFocus}
         onBlur={handleInputBlur}
+        onKeyUp={handleKeyUp}
         ref={inputRef}
         id={name}
         name={name}

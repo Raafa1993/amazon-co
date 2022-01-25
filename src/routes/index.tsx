@@ -1,6 +1,7 @@
 import { Route, Switch } from "react-router-dom";
 import Layout from '../components/Layout';
 import AppostileRequest from '../pages/AppostileRequest';
+import ForgottenPassword from "../pages/ForgottenPassword";
 import Home from '../pages/Home';
 import MyAccount from '../pages/MyAccount';
 import MyAppostileRequest from '../pages/MyAppostileRequest';
@@ -14,6 +15,7 @@ function Routes({ props }: any) {
         <Switch>
             <Route path="/" exact component={SignIn} />
             <Route path="/cadastrar" component={SignInUp} />
+            <Route path="/recuperar-senha" exact component={ForgottenPassword} />
 
             <Layout {...props}>
                 <Route path="/home" exact component={Home} />

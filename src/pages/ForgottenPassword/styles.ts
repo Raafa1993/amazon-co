@@ -48,7 +48,7 @@ export const MainArte = styled.div`
 export const HeaderLogo = styled.div`
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: flex-end;
 
   padding: 20px;
 `;
@@ -67,7 +67,6 @@ export const Contentinfo = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100%;
   padding: 20px 0;
 
   overflow-y: scroll;

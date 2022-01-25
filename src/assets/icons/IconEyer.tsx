@@ -1,4 +1,4 @@
-export default function IconEye() {
+export default function IconEyer() {
   return (
     <svg
       id="icon_eye"
