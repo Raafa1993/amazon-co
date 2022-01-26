@@ -3,7 +3,7 @@ import { ButtonHTMLAttributes, ReactComponentElement, ReactElement } from 'react
 import { Container } from './styles';
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-    status: 'Pendente' | 'Cancelado' | 'Concluido' | 'Visualizar';
+    status: string;
     border?: boolean;
     text: string;
     icon?: any;

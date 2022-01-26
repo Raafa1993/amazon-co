@@ -5,7 +5,6 @@ export const Container = styled.div`
   flex-direction: column;
   width: 100%;
   height: 100%;
-
 `;
 
 export const Content = styled.div`
@@ -13,15 +12,14 @@ export const Content = styled.div`
   grid-template-columns: 1fr 1fr;
   gap: 60px;
 
-  background: #F2F5FC;
+  background: #f2f5fc;
   padding: 40px;
 
-  @media(max-width: 680px) {
+  @media (max-width: 680px) {
     grid-template-columns: 1fr;
 
     width: 100%;
   }
-
 `;
 
 export const PanelLeft = styled.div`
@@ -34,30 +32,29 @@ export const PanelLeft = styled.div`
     color: var(--darkBlack);
   }
 
-
-`;
-
-export const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  margin-top: 60px;
-
-  @media(max-width: 680px) {
-    margin-top: 24px;
-  }
-
-  h2 {
-    font-size: 1.25rem;
-    font-weight: bold;
-    color: var(--darkBlack);
-  }
-
-  .field {
+  form {
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
+    margin-top: 38px;
+    gap: 22px;
 
-    margin-top: 30px;
+    @media (max-width: 680px) {
+      margin-top: 24px;
+    }
+
+    h2 {
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: var(--darkBlack);
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+
+      margin-top: 30px;
+    }
   }
 `;
 
@@ -77,7 +74,7 @@ export const PanelRight = styled.div`
     margin-bottom: 10px;
   }
 
-  @media(max-width: 680px) {
+  @media (max-width: 680px) {
     border-left: 0;
     padding-left: 0;
     margin-top: 0;
@@ -94,7 +91,7 @@ export const BackToHome = styled.div`
   width: 36%;
   background: #fff;
 
-  @media(max-width: 680px) {
+  @media (max-width: 680px) {
     width: 100%;
   }
 
@@ -122,4 +119,4 @@ export const BackToHome = styled.div`
       filter: brightness(0.8);
     }
   }
-`
+`;

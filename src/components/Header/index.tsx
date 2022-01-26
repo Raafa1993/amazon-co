@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from '../../hooks/Auth';
+
 import IconAlert from "../../assets/icons/IconAlert";
 import IconArrowLeft from "../../assets/icons/IconArrowLeft";
 import ButtonNotification from "../form/ButtonNotification";
@@ -28,7 +30,11 @@ interface IMenu {
   }
 
 export default function Header({ menus, path }: ISiderbar) {
-  const [hasVisible, setHasVisible] = useState(false)
+  const [hasVisible, setHasVisible] = useState(false);
+  const { signOut } = useAuth();
+  const userName = localStorage.getItem('@Acopy:user');
+
+
   return (
     <Container>
       <Ul>
@@ -56,14 +62,17 @@ export default function Header({ menus, path }: ISiderbar) {
                 <img src="https://avatars.githubusercontent.com/u/37309024?v=4" alt="profile" />
             </Image>
             <Info hasVisible={hasVisible}>
-                <h2>Rafael Araujo</h2>
+                <h2>{(userName)}</h2>
                 <IconArrowLeft />
             </Info>
 
             <MenuProfile
               hasVisible={hasVisible}
             >
-              <button className="buttonSignUp">
+              <button
+                className="buttonSignUp"
+                onClick={signOut}
+              >
                 <IconArrowLeft />
                 Sair
               </button>

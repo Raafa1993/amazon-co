@@ -3,7 +3,12 @@ import { useHistory } from "react-router-dom";
 import Input from "../../components/form/Input";
 import ButtonSubmit from "../../components/form/ButtonSubmit";
 import Radio from "../../components/form/Radio";
-import { useAuth } from "../../hooks/AuthContext";
+import { useAuth } from "../../hooks/Auth";
+import * as Yup from "yup";
+import { Form } from '@unform/web';
+import { FormHandles } from '@unform/core';
+import getValidationErrors from "../../Utils/getValidationErrors";
+import { toast } from 'react-toastify'
 
 import IconEye from "../../assets/icons/IconEyeClose";
 import LogoAmazon from "../../assets/icons/LogoAmazon";
@@ -30,62 +35,63 @@ interface SignInFormData {
   senha: string;
 }
 
-interface Errors {
-  error: boolean;
-  message: string;
-  name: string;
-}
-
 export default function SignIn() {
-  const formRef = useRef(null);
+  const formRef = useRef<FormHandles>(null);
   const history = useHistory();
-  const { signIn, setTypeInt, typeInt, user } = useAuth()
+  const { signIn, setTypeInt, typeInt } = useAuth()
   
   const [load, setLoad] = useState(false);
-  const [error, setError] = useState<Errors>();
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [formData, setFormData] = useState<SignInFormData>({
     email: "",
     senha: "",
   });
 
-  console.log(user)
-
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
   }
 
-  const handleSubmit = useCallback(async (event: any) => {
+  const handleSubmit = useCallback(async (data: SignInFormData) => {
     try {
-      event.preventDefault();
+      formRef.current?.setErrors({});
       setLoad(true)
 
-      const { email, senha } = formData;
-      const data = {
-        email,
-        senha,
-      };
+      const schema = Yup.object().shape({
+        email: Yup.string()
+          .email("Digite um e-mail válido")
+          .required("E-mail obrigatório"),
+        senha: Yup.string().min(4, "No mínimo 4 digitos"),
+      });
+
+      await schema.validate(data, {
+        abortEarly: false,
+      });
 
       await signIn({
         email: data.email,
         senha: data.senha,
       })
+
       setLoad(false)
-      history.push('/home')
+      toast.success('Login realizado com sucesso!')
+
+      setTimeout(() => {
+        history.push('/home')
+      }, 3000)
 
     } catch(err: any) {
-      console.log(err)
-      setTimeout(() => {
-        setError({
-          error: true,
-          message: err.message,
-          name: err.name,
-        });
-        setLoad(false)
-      }, 1000);
+      setLoad(false)
+
+      if (err instanceof Yup.ValidationError) {
+        const errors = getValidationErrors(err);
+
+        formRef.current?.setErrors(errors);
+        return;
+      }
+      toast.error(err.response.data.message)
     }
-  }, [signIn, formData])
+  }, [signIn, history])
 
   return (
     <Container>
@@ -126,7 +132,7 @@ export default function SignIn() {
           </OptionUser>
 
           <ContentForm>
-            <form ref={formRef} onSubmit={handleSubmit}>
+            <Form ref={formRef} onSubmit={handleSubmit}>
               <div className="field">
                 <Input
                   value={formData.email}
@@ -134,7 +140,6 @@ export default function SignIn() {
                   name="email"
                   label="login"
                   onChange={handleInputChange}
-                  error={error}
                 />
 
                 <Input
@@ -162,7 +167,7 @@ export default function SignIn() {
                   Entrar
                 </ButtonSubmit>
               </div>
-            </form>
+            </Form>
 
             <NotRegister isUser={typeInt === "/login"}>
               <span>

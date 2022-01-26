@@ -1,47 +1,75 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import IconBallonMessage from "../../assets/icons/IconBallonMessage";
 import IconCancel from "../../assets/icons/IconCancel";
+import IconEyer from "../../assets/icons/IconEyer";
 import ButtonDefault from "../../components/form/ButtonDefault";
 import ButtonLinear from "../../components/form/ButtonLinear";
 import ButtonNotification from "../../components/form/ButtonNotification";
 import InputDefault from "../../components/form/InputDefault";
 import Modal from "../../components/form/Modal";
-import { ButtonPagination, PaginationButton, PaginationItem } from "../../components/form/Pagination/styles";
+import {
+  ButtonPagination,
+  PaginationButton,
+  PaginationItem,
+} from "../../components/form/Pagination/styles";
 import SelectDefault from "../../components/form/SelectDefault";
+import { api } from "../../services/api";
 import {
   Container,
   SectionFilter,
   Filter,
   Separator,
-  ContentSearch,
   SectionTable,
   SectionPagination,
 } from "./styles";
 
+interface OrderProps {
+  id_usuario: string;
+  unidade: string;
+  setor: string;
+  id_pedido: string;
+  qtd_paginas: number;
+  qtd_copias: number;
+  valor: number;
+  criado: string;
+  status: string;
+}
+
 export default function MyRequests() {
-  const history = useHistory()
+  const history = useHistory();
   const [modal, setModal] = useState(false);
+  const [data, setData] = useState<OrderProps[]>([]);
+  const [load, setLoad] = useState(true);
+  const [status, setStatus] = useState('pendente')
 
   const [total, setTotal] = useState(0);
-  const [pages, setPages] = useState([0,1,2,3,4]);
+  const [pages, setPages] = useState([0, 1, 2, 3, 4]);
   const [currentPage, setCurrentPage] = useState(0);
+
+  useEffect(() => {
+    setLoad(true)
+    api.get(`pedido-usuario?status=${status}&ordem=criado&pagina=1`).then(res => {
+      setData(res.data.result.data)
+      setLoad(false)
+    })
+  }, [status])
+
+  console.log(load)
 
   return (
     <Container>
       <SectionFilter>
-
         <h1 className="titleMyRequest">Meus Pedidos</h1>
         <Filter>
           <SelectDefault
             value=""
             placeholder="Status"
-            onChangeText={value => console.log(value)}
+            onChangeText={value => setStatus(value)}
           >
-            <option value="Placeholder maneiro">Conteúdo</option>
-            <option value="Pendente">Pendente</option>
-            <option value="Impedimento">Impedimento</option>
-            <option value="Todos">Todos</option>
+            <option value="pendente">Pendente</option>
+            <option value="impedimento">Impedimento</option>
+            <option value="todos">Todos</option>
           </SelectDefault>
 
           <SelectDefault
@@ -56,11 +84,8 @@ export default function MyRequests() {
           </SelectDefault>
 
           <Separator />
-
         </Filter>
 
-        {/* <ContentSearch>
-        </ContentSearch> */}
         <InputDefault
           onChangeText={value => console.log(value)}
           value={""}
@@ -70,12 +95,11 @@ export default function MyRequests() {
 
         <Separator />
 
-        <ButtonDefault 
-          status="Concluido"
+        <ButtonDefault
+          status="concluido"
           text="Fazer novo Pedido"
-          onClick={() => history.push('/novo-pedido')}
+          onClick={() => history.push("/novo-pedido")}
         />
-
       </SectionFilter>
 
       <SectionTable>
@@ -94,28 +118,36 @@ export default function MyRequests() {
             </tr>
           </thead>
           <tbody>
-            {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((row, key) => (
-              <tr key={key}>
+            {data.map((row) => (
+              <tr key={row.id_pedido}>
                 <td>
                   <ButtonDefault
-                    status="Visualizar"
+                    status="visualizar"
                     border={true}
-                    text="Visualizar"
-                    // icon={<IconEyer />}
-                    onClick={() => history.push(`/pedido/${key}`)}
+                    text="visualizar"
+                    icon={<IconEyer />}
+                    onClick={() => history.push(`/pedido/${row.id_pedido}`)}
                   />
                 </td>
-                <td>Apostila 01</td>
-                <td>250</td>
-                <td>X5</td>
-                <td>R$150,00</td>
-                <td>01/01/2020</td>
+                <td>{row.id_pedido}</td>
+                <td>{row.qtd_paginas}</td>
+                <td>{row.qtd_copias}</td>
+                <td>
+                  {new Intl.NumberFormat("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  }).format(row.valor)}
+                </td>
+                <td>
+                  {new Intl.DateTimeFormat("pt-BR").format(
+                    new Date(row.criado),
+                  )}
+                </td>
                 <td>
                   <ButtonLinear
-                    status="Pendente"
+                    status={row.status}
                     border={true}
-                    text="Pendente"
-                    onClick={() => history.push(`/meus-pedidos/${key}`)}
+                    text={row.status}
                   />
                 </td>
                 <td>
@@ -137,34 +169,34 @@ export default function MyRequests() {
       </SectionTable>
 
       <SectionPagination>
-          <PaginationButton>
-            <ButtonPagination
-              type="button"
-              onClick={() => setCurrentPage(currentPage - 1)}
-              disabled={currentPage < 1}
-              isActive={currentPage < 1}
+        <PaginationButton>
+          <ButtonPagination
+            type="button"
+            onClick={() => setCurrentPage(currentPage - 1)}
+            disabled={currentPage < 1}
+            isActive={currentPage < 1}
+          >
+            Voltar
+          </ButtonPagination>
+          {pages.map(page => (
+            <PaginationItem
+              isSelect={page === currentPage}
+              key={page}
+              onClick={() => setCurrentPage(page)}
+              disabled={page === currentPage}
             >
-              Voltar
-            </ButtonPagination>
-            {pages.map(page => (
-              <PaginationItem
-                isSelect={page === currentPage}
-                key={page}
-                onClick={() => setCurrentPage(page)}
-                disabled={page === currentPage}
-              >
-                {page + 1}
-              </PaginationItem>
-            ))}
-            <ButtonPagination
-              type="button"
-              onClick={() => setCurrentPage(currentPage + 1)}
-              disabled={currentPage === pages.length - 1}
-              isActive={currentPage === pages.length - 1}
-            >
-              Avançar
-            </ButtonPagination>
-          </PaginationButton>
+              {page + 1}
+            </PaginationItem>
+          ))}
+          <ButtonPagination
+            type="button"
+            onClick={() => setCurrentPage(currentPage + 1)}
+            disabled={currentPage === pages.length - 1}
+            isActive={currentPage === pages.length - 1}
+          >
+            Avançar
+          </ButtonPagination>
+        </PaginationButton>
       </SectionPagination>
 
       <Modal

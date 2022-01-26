@@ -4,6 +4,7 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  height: 100%;
   background: #F2F5FC;
   padding: 40px;
 
@@ -22,7 +23,6 @@ export const SectionFilter = styled.div`
   .titleMyRequest {
     font-size: 30px;
     font-weight: bold;
-    /* white-space: nowrap; */
     color: var(--darkBlack);
   }
 

@@ -7,7 +7,7 @@ export const Container = styled.div`
   /* height: 100%; */
 
   /* background: #F2F5FC; */
-        /* padding: 40px; */
+  /* padding: 40px; */
 
   h1 {
     font-size: 1.875rem;
@@ -15,43 +15,40 @@ export const Container = styled.div`
     color: var(--darkBlack);
   }
 
-`;
-
-export const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  width: 40%;
-  margin-top: 60px;
-
-  @media(max-width: 680px) {
-    margin-top: 24px;
-  }
-
-  h2 {
-    font-size: 1.25rem;
-    font-weight: bold;
-    color: var(--darkBlack);
-  }
-
-  .field {
+  form {
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
+    width: 40%;
+    margin-top: 60px;
 
-    margin-top: 30px;
-  }
+    @media (max-width: 680px) {
+      margin-top: 24px;
+    }
 
-  @media(max-width: 680px) {
+    h2 {
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: var(--darkBlack);
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+
+      margin-top: 30px;
+    }
+    @media (max-width: 680px) {
       width: 100%;
     }
+  }
 `;
 
 export const Content = styled.div`
   width: 100%;
   height: 100%;
-  background: #F2F5FC;
+  background: #f2f5fc;
   padding: 40px;
-
 `;
 
 export const ChangePassword = styled.div`
@@ -92,7 +89,7 @@ export const BackToHome = styled.div`
   width: 36%;
   background: #fff;
 
-  @media(max-width: 680px) {
+  @media (max-width: 680px) {
     width: 100%;
   }
 
@@ -120,5 +117,4 @@ export const BackToHome = styled.div`
       filter: brightness(0.8);
     }
   }
-
-`
+`;

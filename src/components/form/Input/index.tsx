@@ -1,11 +1,13 @@
 import React, {
   InputHTMLAttributes,
   useCallback,
+  useEffect,
   useRef,
   useState,
 } from "react";
 import { IconBaseProps } from "react-icons";
-import { maskPhone, maskCEP, maskCPF, maskDate } from "./masks";
+import { maskPhone, maskCEP, maskCPF, maskDate, currency } from "./masks";
+import { useField } from '@unform/core';
 
 import { Container, Error } from "./styles";
 
@@ -16,11 +18,6 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   handleOnPassword?: () => void;
   Icon?: React.ComponentType<IconBaseProps>;
   mask?: string;
-  error?: {
-    error: boolean;
-    message: string;
-    name: string;
-  };
 }
 
 export default function Input({
@@ -28,7 +25,6 @@ export default function Input({
   label,
   value,
   Icon,
-  error,
   mask,
   handleOnPassword,
   ...rest
@@ -36,6 +32,7 @@ export default function Input({
   const inputRef = useRef<HTMLInputElement>(null);
   const [isFocused, setIsFocused] = useState(false);
   const [isField, setIsField] = useState(false);
+  const { fieldName, defaultValue, error, registerField, } = useField(name)
 
   const handleInputFocus = useCallback(() => {
     setIsFocused(true);
@@ -53,6 +50,8 @@ export default function Input({
         maskCEP(e);
       } else if (mask === "date") {
         maskDate(e);
+      } else if (mask === "currency") {
+        currency(e);
       } else if (mask === "fone") {
         maskPhone(e);
       } else {
@@ -63,13 +62,27 @@ export default function Input({
     [mask],
   );
 
+  useEffect(() => {
+    registerField({
+      name: fieldName,
+      ref: inputRef.current,
+      path: 'value',
+    });
+  }, [fieldName, registerField]);
+
   return (
-    <Container value={value} isField={isField} isFocused={isFocused}>
+    <Container 
+      value={value}
+      isField={isField} 
+      isFocused={isFocused}
+      isErrored={!!error}
+    >
       <label htmlFor={name}>{label}</label>
 
       <input
         onFocus={handleInputFocus}
         onBlur={handleInputBlur}
+        defaultValue={defaultValue}
         onKeyUp={handleKeyUp}
         ref={inputRef}
         id={name}
@@ -83,9 +96,9 @@ export default function Input({
         </button>
       )}
 
-      {error?.error && (
+      {error && (
         <Error>
-          <span>{error.message}</span>
+          <span>{error}</span>
         </Error>
       )}
     </Container>

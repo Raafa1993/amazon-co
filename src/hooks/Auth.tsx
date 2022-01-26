@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useCallback, useContext, useState } from 'react';
-import api from '../services/api';
+import { api } from '../services/api';
 
 interface User {
   id: string;
@@ -46,8 +46,6 @@ function AuthProvider({ children }: TransactionsProviderProps) {
     return {} as AuthState;
   })
 
-  console.log(data)
-
   const [typeInt, setTypeInt] = useState('/login')
 
   const signIn = useCallback(async ({ email, senha }) => {
@@ -55,7 +53,6 @@ function AuthProvider({ children }: TransactionsProviderProps) {
       email,
       senha,
     });
-    console.log(response)
 
     const { nome, token } = response.data.result;
 

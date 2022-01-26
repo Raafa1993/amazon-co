@@ -12,8 +12,8 @@ export default function IconArrowLeft() {
         transform="translate(-10036.804 -4923.441)"
         fill="none"
         stroke="#0abf9e"
-        stroke-linecap="round"
-        stroke-width="2"
+        strokeLinecap="round"
+        strokeWidth="2"
       />
     </svg>
   );

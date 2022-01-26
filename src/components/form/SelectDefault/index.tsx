@@ -37,7 +37,7 @@ export default function SelectDefault({
         onChange={handleOnChange}
       >
         {placeholder && (
-          <option value="" disabled={true}>
+          <option value="default" disabled={true}>
             {placeholder}
           </option>
         )}

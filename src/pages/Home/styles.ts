@@ -9,14 +9,12 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  height: 100%;
   background: #f2f5fc;
   padding: 40px;
 `;
 
 export const SectionFilter = styled.div`
-  /* display: flex;
-  align-items: center;
-  justify-content: space-between; */
   display: grid;
   grid-template-columns: 15% 60% 5% 20%;
   align-items: center;
@@ -72,6 +70,14 @@ export const ContentSearch = styled.div`
   }
   transition: all 0.2s;
 `;
+
+export const Main = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  height: 100%;
+`
 
 export const SectionTable = styled.div`
   display: flex;

@@ -6,7 +6,11 @@ import Input from "../../components/form/Input";
 import ButtonSubmit from "../../components/form/ButtonSubmit";
 import { useHistory } from "react-router-dom";
 import * as Yup from "yup";
-import getVaidationErrors from "../../Utils/getValidationErrors";
+import { Form } from '@unform/web';
+import { FormHandles } from '@unform/core';
+import getValidationErrors from "../../Utils/getValidationErrors";
+import { toast } from 'react-toastify'
+import { api } from "../../services/api";
 
 import IconArrowLeft from "../../assets/icons/IconArrowLeft";
 import {
@@ -20,7 +24,6 @@ import {
   ContentForm,
   BackToPage,
 } from "./styles";
-import api from "../../services/api";
 
 interface SignInFormData {
   nome: string;
@@ -30,20 +33,13 @@ interface SignInFormData {
   setor: string;
   id_endereco: string;
   senha: string;
-  confirmar_senha: string;
-}
-
-interface Errors {
-  error: boolean;
-  message: string;
-  name: string;
+  confirmeSenha: string;
 }
 
 export default function SignInUp() {
-  const formRef = useRef(null);
+  const formRef = useRef<FormHandles>(null);
   const history = useHistory();
   const [load, setLoad] = useState(false);
-  const [error, setError] = useState<Errors>();
   const [formData, setFormData] = useState<SignInFormData>({
     nome: "",
     email: "",
@@ -52,7 +48,7 @@ export default function SignInUp() {
     setor: "",
     id_endereco: "",
     senha: "",
-    confirmar_senha: "",
+    confirmeSenha: "",
   });
 
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -62,72 +58,47 @@ export default function SignInUp() {
 
   const handleSubmit = useCallback(async (data: object) => {
     try {
-      // formRef.current?.setErrors({});
+      formRef.current?.setErrors({});
       setLoad(true)
 
       const schema = Yup.object().shape({
-        name: Yup.string().required("Nome obrigatório"),
+        nome: Yup.string().required("Nome obrigatório"),
         email: Yup.string()
           .email("Digite um e-mail válido")
           .required("E-mail obrigatório"),
-        password: Yup.string().min(6, "No mínimo 6 digitos"),
+        telefone: Yup.string().required("Telefone obrigatório"),
+        unidade: Yup.string().required("Unidade obrigatório"),
+        setor: Yup.string().required("Setor obrigatório"),
+        id_endereco: Yup.string().required("Endereco obrigatório"),
+        senha: Yup.string().min(4, "No mínimo 4 digitos"),
+        confirmeSenha: Yup.string().min(4, "No mínimo 4 digitos"),
       });
 
       await schema.validate(data, {
         abortEarly: false,
       });
 
-      // const { 
-      //   nome,
-      //   email,
-      //   telefone,
-      //   unidade,
-      //   setor,
-      //   id_endereco,
-      //   senha,
-      //   confirmar_senha,
-      // } = formData;
-
-      // const data = {
-      //   nome,
-      //   email,
-      //   telefone,
-      //   unidade,
-      //   setor,
-      //   id_endereco,
-      //   senha,
-      //   confirmar_senha,
-      // };
-
-      // console.log(data)
-
+      await api.post("/usuario", data);
       
-      // const response = await api.post("/usuario", data);
-      
-      // console.log(response)
-
-      // if (response.data.status === "error") {
-      //   throw response.data.message;
-      // }
-
-      alert('Usuario cadastrado com sucesso')
-
-  
       setLoad(false)
-      // history.push('/home')
+      toast.error('Cadastro realizado com sucesso!')
+
+      setTimeout(() => {
+        history.push('/home')
+      }, 3000)
 
     } catch(err: any) {
+      setLoad(false)
+
       if (err instanceof Yup.ValidationError) {
-        setLoad(false);
+        const errors = getValidationErrors(err);
 
-        // const errors = getVaidationErrors(err);
-
-        // formRef.current?.setErrors(errors);
-
+        formRef.current?.setErrors(errors);
         return;
       }
+      toast.error(err.response.data.message)
     }
-  }, [])
+  }, [history])
 
   return (
     <Container>
@@ -151,7 +122,7 @@ export default function SignInUp() {
           </WellcomeSignIn>
 
           <ContentForm>
-            <form ref={formRef} onSubmit={handleSubmit}>
+            <Form ref={formRef} onSubmit={handleSubmit}>
               <div className="field">
                 <Input
                   value={formData.nome}
@@ -159,7 +130,7 @@ export default function SignInUp() {
                   name="nome"
                   label="Nome do Usuário"
                   onChange={handleInputChange}
-                  error={error}
+                  // error={errors}
                 />
 
                 <Input
@@ -169,7 +140,6 @@ export default function SignInUp() {
                   mask="fone"
                   label="Telefone"
                   onChange={handleInputChange}
-                  error={error}
                 />
 
                 <Input
@@ -178,7 +148,6 @@ export default function SignInUp() {
                   name="email"
                   label="E-mail"
                   onChange={handleInputChange}
-                  error={error}
                 />
 
                 <Input
@@ -187,7 +156,6 @@ export default function SignInUp() {
                   name="unidade"
                   label="Unidade"
                   onChange={handleInputChange}
-                  error={error}
                 />
 
                 <Input
@@ -196,7 +164,6 @@ export default function SignInUp() {
                   name="setor"
                   label="Setor"
                   onChange={handleInputChange}
-                  error={error}
                 />
 
                 <Input
@@ -205,7 +172,6 @@ export default function SignInUp() {
                   name="id_endereco"
                   label="ID"
                   onChange={handleInputChange}
-                  error={error}
                 />
 
                 <Input
@@ -214,16 +180,14 @@ export default function SignInUp() {
                   name="senha"
                   label="Senha"
                   onChange={handleInputChange}
-                  error={error}
                 />
 
                 <Input
-                  value={formData.confirmar_senha}
+                  value={formData.confirmeSenha}
                   type="password"
-                  name="confirmar_senha"
+                  name="confirmeSenha"
                   label="Confirmar senha"
                   onChange={handleInputChange}
-                  error={error}
                 />
 
                 <ButtonSubmit 
@@ -233,7 +197,7 @@ export default function SignInUp() {
                     Continuar
                 </ButtonSubmit>
               </div>
-            </form>
+            </Form>
 
             <BackToPage>
               <button type="button" onClick={() => history.goBack()}>

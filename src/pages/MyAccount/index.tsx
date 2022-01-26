@@ -4,10 +4,10 @@ import { useHistory } from 'react-router-dom';
 import IconArrowLeft from '../../assets/icons/IconArrowLeft';
 import ButtonDefault from '../../components/form/ButtonDefault';
 import Input from '../../components/form/Input';
+import { Form } from '@unform/web';
 
 import { 
   Container,
-  Form,
   Content,
   ChangePassword,
   BackToHome,
@@ -31,13 +31,13 @@ export default function MyAccount() {
 
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
-    setFormData({... formData, [name]: value});
+    setFormData({...formData, [name]: value});
   }
   return (
     <Container>
       <Content>
         <h1>Minha Conta</h1>
-        <Form action="">
+        <Form onSubmit={{} as any}>
           <h2>Dados da Conta</h2>
 
           <div className="field">

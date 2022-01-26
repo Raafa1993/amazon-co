@@ -1,19 +1,22 @@
 
-import React, { useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import IconArrowLeft from '../../assets/icons/IconArrowLeft';
-import IconEye from '../../assets/icons/IconEyeClose';
 import ButtonDefault from '../../components/form/ButtonDefault';
 import Input from '../../components/form/Input';
 import InputFile from '../../components/form/InputFile';
-import InputTextarea from '../../components/form/InputTextarea';
 import Select from '../../components/form/Select';
-import SelectDefault from '../../components/form/SelectDefault';
 import TextArea from '../../components/form/TextArea';
+
+import * as Yup from "yup";
+import { Form } from '@unform/web';
+import { FormHandles } from '@unform/core';
+import getValidationErrors from "../../Utils/getValidationErrors";
+import { toast } from 'react-toastify'
+import { api } from "../../services/api";
 
 import { 
   Container,
-  Form,
   Content,
   PanelLeft,
   PanelRight,
@@ -21,49 +24,68 @@ import {
 } from './styles';
 
 interface MyAccountData {
-  nameUser: string;
-  sectorName: string;
-  unitName: string;
-  ordername: string;
-  qtdPages: string;
-  qtdCopy: string;
-  typeService: string;
-  unitValue: string;
-  totalValue: string;
-  note: string;
+  id_grafica: string;
+  id_servico: string;
+  nome: string;
+  qtd_pagina: string;
+  qtd_copia: string;
+  unidade: string;
+  setor: string;
+  observacao: string;
 }
 
 export default function NewRequest() {
+  const formRef = useRef<FormHandles>(null);
   const history = useHistory()
-  const [formData, setFormData] = useState<MyAccountData>({
-    nameUser: '',
-    unitName: '',
-    sectorName: '',
-    ordername: '',
-    qtdPages: '',
-    qtdCopy: '',
-    typeService: '',
-    unitValue: '',
-    totalValue: '',
-    note: '',
-  })
+  const [load, setLoad] = useState(true);
+  
 
-  function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const { name, value } = event.target;
-    setFormData({...formData, [name]: value});
-  }
+  const handleSubmit = useCallback(async (data: object) => {
+    try {
+      formRef.current?.setErrors({});
+      setLoad(true)
 
-  function handleTextAre(event: React.ChangeEvent<HTMLTextAreaElement>) {
-    const { name, value } = event.target;
-    setFormData({...formData, [name]: value});
-  }
+      const schema = Yup.object().shape({
+        id_grafica: Yup.string().required("Campo obrigatorio"),
+        id_servico: Yup.string().required("Campo obrigatorio"),
+        nome: Yup.string().required("Campo obrigatorio"),
+        qtd_pagina: Yup.string().required("Campo obrigatorio"),
+        qtd_copia: Yup.string().required("Campo obrigatorio"),
+        unidade: Yup.string().required("Campo obrigatorio"),
+        setor: Yup.string().required("Campo obrigatorio"),
+        observacao: Yup.string().required("Campo obrigatorio"),
+      });
+
+      await schema.validate(data, {
+        abortEarly: false,
+      });
+
+      // await api.post("/usuario", data);
+
+      console.log(data)
+      
+      setLoad(false)
+      toast.error('Cadastro realizado com sucesso!')
+
+    } catch(err: any) {
+      setLoad(false)
+
+      if (err instanceof Yup.ValidationError) {
+        const errors = getValidationErrors(err);
+
+        formRef.current?.setErrors(errors);
+        return;
+      }
+      toast.error(err.response.data.message)
+    }
+  }, [history])
 
   return (
     <Container>
       <Content>
         <PanelLeft>
           <h1>Novo Pedido</h1>
-          <Form action="">
+          <Form ref={formRef} onSubmit={handleSubmit}>
             <h2>Dados do pedido</h2>
 
             <div className="field">
@@ -73,7 +95,7 @@ export default function NewRequest() {
                 name='Select'
                 id='Select'
                 isDisabled={true}
-                value={formData.nameUser}
+                value={''}
               >
                 <option value="Conteudo">Conteúdo</option>
                 <option value="Pendente">Pendente</option>
@@ -82,90 +104,94 @@ export default function NewRequest() {
               </Select>
 
               <Input
-                value={formData.nameUser}
+                value={''}
                 type="text"
                 name="nameUser"
                 disabled
                 label="Nome do Usuario"
                 placeholder='Digite aqui'
-                onChange={handleInputChange}
               />
 
               <Input
-                value={formData.unitName}
+                value={''}
                 type="text"
                 name="unitName"
                 disabled
                 label="Nome da Unidade"
                 placeholder='Digite aqui'
-                onChange={handleInputChange}
               />
 
               <Input
-                value={formData.sectorName}
+                value={''}
                 type="text"
                 name="sectorName"
                 disabled
                 label="Setor"
                 placeholder='Digite aqui'
-                onChange={handleInputChange}
               />
 
               <Input
-                value={formData.ordername}
+                value={''}
                 type="text"
                 name="ordername"
                 label="Nome do pedido"
                 placeholder='Digite aqui'
-                onChange={handleInputChange}
               />
 
               <Input
-                value={formData.qtdPages}
+                value={''}
                 type="text"
                 name="qtdPages"
                 label="Quantidade de paginas"
                 placeholder='Digite aqui'
-                onChange={handleInputChange}
               />
 
               <Input
-                value={formData.qtdCopy}
+                value={''}
                 type="text"
                 name="qtdCopy"
                 label="Qunatidade de copias"
                 placeholder='Digite aqui'
-                onChange={handleInputChange}
               />
 
               <Input
-                value={formData.typeService}
+                value={''}
                 type="text"
                 name="typeService"
                 label="Tipo do Serviço"
                 placeholder='Digite aqui'
-                onChange={handleInputChange}
               />
 
               <Input
-                value={formData.unitValue}
+                value={''}
                 type="text"
                 name="unitValue"
                 label="Valor Unitario"
                 placeholder='Digite aqui'
-                onChange={handleInputChange}
               />
 
               <Input
-                value={formData.totalValue}
+                value={''}
                 type="text"
                 name="totalValue"
                 disabled
                 label="Valor Total"
                 placeholder='Digite aqui'
-                onChange={handleInputChange}
+              />
+
+              <TextArea 
+                defaultValue={''}
+                name="note"
+                label="Observação"
+                placeholder='Digite aqui'
               />
             </div>
+            
+            <ButtonDefault 
+              type='submit'
+              status='concluido'
+              text='Salvar'
+            />
           </Form>
         </PanelLeft>
 
@@ -176,16 +202,7 @@ export default function NewRequest() {
             value={''}
             name="totalValue"
             label="Clique no arquivo para realizar o Download"
-            // placeholder='Digite aqui'
-            // onChange={handleInputChange}
-          />
-
-          <TextArea 
-            value={formData.note}
-            name="note"
-            label="Observação"
-            placeholder='Digite aqui'
-            onChange={handleTextAre}
+ 
           />
         </PanelRight>
 
@@ -199,10 +216,7 @@ export default function NewRequest() {
           <IconArrowLeft />
           Voltar
         </button>
-        <ButtonDefault 
-          status='Concluido'
-          text='Salvar'
-        />
+        
       </BackToHome>
     </Container>
   );
