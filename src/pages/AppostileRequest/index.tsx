@@ -1,12 +1,15 @@
-
 import { useEffect, useRef, useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import IconArrowLeft from '../../assets/icons/IconArrowLeft';
-import ButtonDefault from '../../components/form/ButtonDefault';
-import Input from '../../components/form/Input';
+import { useHistory, useParams } from 'react-router-dom';
+import api from '../../services/api';
 import InputFile from '../../components/form/InputFile';
+import Input from '../../components/form/Input';
+import TextArea from '../../components/form/TextArea';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
+import { useAuth } from '../../hooks/Auth';
+
+import IconArrowLeft from '../../assets/icons/IconArrowLeft';
+import ButtonDefault from '../../components/form/ButtonDefault';
 
 import { 
   Container,
@@ -15,11 +18,10 @@ import {
   PanelRight,
   BackToHome,
 } from './styles';
-import { api } from '../../services/api';
-import TextArea from '../../components/form/TextArea';
 
 interface OrderProps {
-  id_usuario: string;
+  id_usuario?: string;
+  id_grafica?: string;
   unidade: string;
   setor: string;
   id_pedido: string;
@@ -29,15 +31,23 @@ interface OrderProps {
   criado: string;
   status: string;
   id_servico: string;
-  observacao: string;
+  observacao?: string;
 }
 
-export default function AppostileRequest(props: any) {
-  const formRef = useRef<FormHandles>(null);
-  const history = useHistory()
+interface ParamsProps {
+  id: string;
+}
 
+export default function AppostileRequest({props}: any) {
+  const formRef = useRef<FormHandles>(null);
+  const { user } = useAuth();
+  const { id } = useParams<ParamsProps>()
+  const history = useHistory();
+  const [load, setLoad] = useState(true);
+  
   const [data, setData] = useState<OrderProps>({
     id_usuario: '',
+    id_grafica: '',
     unidade: '',
     setor: '',
     id_pedido: '',
@@ -51,23 +61,24 @@ export default function AppostileRequest(props: any) {
   })
 
   useEffect(() => {
-    api.get(`pedido-grafica/${props.match.params.slug}`).then(res => {
+    setLoad(true);
+    api.get(`pedido-${user.profile}/${id}`).then(res => {
       setData(res.data.result[0])
     })
-  }, [props.match.params.slug])
+    setLoad(false)
+  }, [user, id])
   
   return (
     <Container>
       <Content>
         <PanelLeft>
-          <h1>{`Pedido Apostilha ${props.match.params.slug}`}</h1>
+          <h1>{`Pedido Apostilha ${id}`}</h1>
           <Form ref={formRef} onSubmit={{} as any}>
             <h2>Dados do pedido</h2>
 
             <div className="field">
 
               <Input
-                value={data.status}
                 defaultValue={data.status}
                 type="text"
                 name="status"
@@ -77,7 +88,6 @@ export default function AppostileRequest(props: any) {
               />
 
               <Input
-                value={data.id_usuario}
                 defaultValue={data.id_usuario}
                 type="text"
                 name="id_usuario"
@@ -87,7 +97,6 @@ export default function AppostileRequest(props: any) {
               />
 
               <Input
-                value={data.unidade}
                 defaultValue={data.unidade}
                 type="text"
                 name="unidade"
@@ -97,7 +106,6 @@ export default function AppostileRequest(props: any) {
               />
 
               <Input
-                value={data.id_pedido}
                 defaultValue={data.id_pedido}
                 type="text"
                 name="ordername"
@@ -107,7 +115,6 @@ export default function AppostileRequest(props: any) {
               />
 
               <Input
-                value={data.qtd_paginas}
                 defaultValue={data.qtd_paginas}
                 type="text"
                 name="id_pedido"
@@ -117,7 +124,6 @@ export default function AppostileRequest(props: any) {
               />
 
               <Input
-                value={data.qtd_copias}
                 defaultValue={data.qtd_copias}
                 type="text"
                 name="qtd_copias"
@@ -127,7 +133,6 @@ export default function AppostileRequest(props: any) {
               />
 
               <Input
-                value={data.id_servico}
                 defaultValue={data.id_servico}
                 type="text"
                 name="id_servico"
@@ -136,18 +141,7 @@ export default function AppostileRequest(props: any) {
                 placeholder='Digite aqui'
               />
 
-              {/* <Input
-                value={data.unitValue}
-                type="text"
-                name="unitValue"
-                disabled
-                label="Valor Unitario"
-                placeholder='Digite aqui'
-                onChange={handleInputChange}
-              /> */}
-
               <Input
-                value={data.valor}
                 defaultValue={data.valor}
                 type="text"
                 name="valor"
@@ -158,7 +152,7 @@ export default function AppostileRequest(props: any) {
               />
 
               <TextArea 
-                defaultValue={data.valor}
+                defaultValue={data.observacao}
                 name="observacao"
                 disabled
                 label="Observação"
@@ -188,7 +182,7 @@ export default function AppostileRequest(props: any) {
           Voltar
         </button>
         <ButtonDefault 
-          status='Concluido'
+          status='concluido'
           text='Salvar'
         />
       </BackToHome>

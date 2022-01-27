@@ -2,19 +2,18 @@ import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import IconBallonMessage from "../../assets/icons/IconBallonMessage";
 import IconCancel from "../../assets/icons/IconCancel";
-import IconEyer from "../../assets/icons/IconEyer";
 import ButtonDefault from "../../components/form/ButtonDefault";
 import ButtonLinear from "../../components/form/ButtonLinear";
 import ButtonNotification from "../../components/form/ButtonNotification";
 import InputDefault from "../../components/form/InputDefault";
 import Modal from "../../components/form/Modal";
+import SelectDefault from "../../components/form/SelectDefault";
+import api from "../../services/api";
 import {
   ButtonPagination,
   PaginationButton,
   PaginationItem,
 } from "../../components/form/Pagination/styles";
-import SelectDefault from "../../components/form/SelectDefault";
-import api from "../../services/api";
 import {
   Container,
   SectionFilter,
@@ -23,6 +22,7 @@ import {
   SectionTable,
   SectionPagination,
 } from "./styles";
+import IconEyer from "../../assets/icons/IconEyer";
 
 interface OrderProps {
   id_usuario: string;
@@ -36,11 +36,27 @@ interface OrderProps {
   status: string;
 }
 
-export default function MyRequests() {
+interface ModalProps {
+  title?: string;
+  subtitle?: string;
+  textArea?: boolean;
+  buttonSend?: string;
+  buttonCancel?: string;
+  message?: {
+    titleMessage?: string;
+    subtitleMessage?: string;
+  };
+}
+
+const limit = 9;
+
+export default function HomeUser() {
   const history = useHistory();
   const [modal, setModal] = useState(false);
   const [data, setData] = useState<OrderProps[]>([]);
   const [load, setLoad] = useState(true);
+  const [idModal, setIdModal] = useState(Number)
+  const [dataModal, setDataModal] = useState<ModalProps>()
   const [status, setStatus] = useState('pendente')
 
   const [total, setTotal] = useState(0);
@@ -51,9 +67,26 @@ export default function MyRequests() {
     setLoad(true)
     api.get(`pedido-usuario?status=${status}&ordem=criado&pagina=1`).then(res => {
       setData(res.data.result.data)
-      setLoad(false)
     })
+    setLoad(false)
   }, [status])
+
+  function handleOnOffSide(id: any) {
+    setIdModal(id)
+    setModal(!modal)
+
+    setDataModal({
+      title:"Deseja enviar um empedimento?",
+      subtitle:"Caso o arquivo esteja com algum defeito ou dúvidas, mande uma mensagem avisando a Escola",
+      textArea:true,
+      buttonSend:"Enviar",
+      buttonCancel:"Cancelar",
+      message:{
+        titleMessage:"Impedimento registrado com sucesso",
+        subtitleMessage:"Uma boa descrição",
+      }
+    })
+  }
 
   return (
     <Container>
@@ -151,13 +184,13 @@ export default function MyRequests() {
                 <td>
                   <ButtonNotification
                     icon={<IconBallonMessage />}
-                    // onClick={() => setModal(!modal)}
+                    onClick={() => handleOnOffSide(row.id_pedido)}
                   />
                 </td>
                 <td>
                   <ButtonNotification
                     icon={<IconCancel />}
-                    // onClick={() => setModal(!modal)}
+                    onClick={() => setModal(!modal)}
                   />
                 </td>
               </tr>
@@ -197,22 +230,24 @@ export default function MyRequests() {
         </PaginationButton>
       </SectionPagination>
 
-      {/* <Modal
+      <Modal
         id="overlayModal"
+        idRequest={idModal}
         onClose={() => setModal(!modal)}
         openModal={modal}
-        title={"Tem certezxa que deseja Cancelar esse pedido?"}
-        subtitle={
-          "Para cancelar é necessario colocar um procedimento avisando o motivo do cancelamento"
-        }
-        textArea={true}
-        buttonSend={"Enviar"}
-        buttonCancel={"Cancelar"}
-        message={{
-          titleMessage: "Pedido cancelado com sucesso!",
-          subtitleMessage: "Uma boa descrição",
-        }}
-      /> */}
+        dataModal={dataModal as any}
+        // title={"Tem certezxa que deseja Cancelar esse pedido?"}
+        // subtitle={
+        //   "Para cancelar é necessario colocar um procedimento avisando o motivo do cancelamento"
+        // }
+        // textArea={true}
+        // buttonSend={"Enviar"}
+        // buttonCancel={"Cancelar"}
+        // message={{
+        //   titleMessage: "Pedido cancelado com sucesso!",
+        //   subtitleMessage: "Uma boa descrição",
+        // }}
+      />
     </Container>
   );
 }

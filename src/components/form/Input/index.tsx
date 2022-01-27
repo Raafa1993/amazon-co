@@ -14,7 +14,6 @@ import { Container, Error } from "./styles";
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
   label: string;
-  value: string;
   handleOnPassword?: () => void;
   Icon?: React.ComponentType<IconBaseProps>;
   mask?: string;
@@ -23,7 +22,6 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 export default function Input({
   name,
   label,
-  value,
   Icon,
   mask,
   handleOnPassword,
@@ -68,12 +66,13 @@ export default function Input({
       ref: inputRef.current,
       path: 'value',
     });
+
+    setIsField(true)
   }, [fieldName, registerField]);
 
   return (
     <Container 
-      value={value}
-      isField={isField} 
+      isField={isField}
       isFocused={isFocused}
       isErrored={!!error}
     >

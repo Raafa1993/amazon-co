@@ -1,4 +1,3 @@
-import React from "react";
 import Header from "../Header";
 
 import { Container, Main } from "./styles";
@@ -17,10 +16,10 @@ export default function Layout(props: any) {
               to: '/minha-conta',
               name: 'Minha Conta',
             },
-            {
-              to: '/meus-pedidos',
-              name: 'Meus pedidos',
-            },
+            // {
+            //   to: '/meus-pedidos',
+            //   name: 'Meus pedidos',
+            // },
           ]}
         />
       <Main>{props.children}</Main>

@@ -1,11 +1,9 @@
-
-import React, { useCallback, useRef, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useAuth } from '../../hooks/Auth';
 import IconArrowLeft from '../../assets/icons/IconArrowLeft';
-import ButtonDefault from '../../components/form/ButtonDefault';
 import Input from '../../components/form/Input';
 import InputFile from '../../components/form/InputFile';
-import Select from '../../components/form/Select';
 import TextArea from '../../components/form/TextArea';
 
 import * as Yup from "yup";
@@ -13,7 +11,7 @@ import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 import getValidationErrors from "../../Utils/getValidationErrors";
 import { toast } from 'react-toastify'
-import { api } from "../../services/api";
+import api from "../../services/api";
 
 import { 
   Container,
@@ -22,23 +20,68 @@ import {
   PanelRight,
   BackToHome,
 } from './styles';
+import ButtonSubmit from '../../components/form/ButtonSubmit';
+import SelectDefault from '../../components/form/SelectDefault';
+import Select from '../../components/form/Select';
 
 interface MyAccountData {
-  id_grafica: string;
-  id_servico: string;
+  id_endereco: string,
   nome: string;
-  qtd_pagina: string;
-  qtd_copia: string;
+  telefone: string;
+  email: string;
+  unidade: string;
+  setor: string
+}
+
+interface ServiceProps {
+  descricao: string;
+  id_servico: number;
+  valor_unitario: number;
+}
+
+interface RequestProps {
+  id_grafica: number;
+  id_servico: number;
+  nome: string;
+  qtd_paginas: string;
+  qtd_copias: string;
   unidade: string;
   setor: string;
-  observacao: string;
+  observacao: string; 
+  valor: string;
 }
 
 export default function NewRequest() {
   const formRef = useRef<FormHandles>(null);
-  const history = useHistory()
-  const [load, setLoad] = useState(true);
-  
+  const history = useHistory();
+  const { user } = useAuth();
+  const [dataUser, setDataUser] = useState<MyAccountData>()
+  const [services, setServices] = useState<ServiceProps[]>([])
+  const[data, setData] = useState<RequestProps>()
+
+  const [value, setValue] = useState<any>();
+
+  const [loadUser, setLoadUser] = useState(true);
+  const [load, setLoad] = useState(false);
+
+  useEffect(() => {
+    setLoadUser(true)
+    api.get(`usuario/${user.id}`).then((res) => {
+      setDataUser(res.data.result)
+    })
+
+    setLoadUser(false)
+  }, [user.id])
+
+  useEffect(() => {
+    api.get('servico').then((response) => {
+      setServices(response.data.result)
+    })
+  }, [])
+
+  function handleOnValue(event: ChangeEvent<HTMLSelectElement>) {
+    setValue(event.target.value)
+  }
 
   const handleSubmit = useCallback(async (data: object) => {
     try {
@@ -46,13 +89,11 @@ export default function NewRequest() {
       setLoad(true)
 
       const schema = Yup.object().shape({
-        id_grafica: Yup.string().required("Campo obrigatorio"),
         id_servico: Yup.string().required("Campo obrigatorio"),
         nome: Yup.string().required("Campo obrigatorio"),
-        qtd_pagina: Yup.string().required("Campo obrigatorio"),
-        qtd_copia: Yup.string().required("Campo obrigatorio"),
-        unidade: Yup.string().required("Campo obrigatorio"),
-        setor: Yup.string().required("Campo obrigatorio"),
+        qtd_paginas: Yup.string().required("Campo obrigatorio"),
+        qtd_copias: Yup.string().required("Campo obrigatorio"),
+        valor: Yup.string().required("Campo obrigatorio"),
         observacao: Yup.string().required("Campo obrigatorio"),
       });
 
@@ -60,12 +101,12 @@ export default function NewRequest() {
         abortEarly: false,
       });
 
+      console.log(data)
+
       // await api.post("/usuario", data);
 
-      console.log(data)
-      
       setLoad(false)
-      toast.error('Cadastro realizado com sucesso!')
+      toast.success('Cadastro realizado com sucesso!')
 
     } catch(err: any) {
       setLoad(false)
@@ -90,108 +131,103 @@ export default function NewRequest() {
 
             <div className="field">
 
-              <Select
-                label='Select'
-                name='Select'
-                id='Select'
-                isDisabled={true}
-                value={''}
-              >
-                <option value="Conteudo">Conteúdo</option>
-                <option value="Pendente">Pendente</option>
-                <option value="Impedimento">Impedimento</option>
-                <option value="Todos">Todos</option>
-              </Select>
-
               <Input
-                value={''}
                 type="text"
-                name="nameUser"
+                name="nomeUser"
                 disabled
                 label="Nome do Usuario"
                 placeholder='Digite aqui'
+                defaultValue={dataUser?.nome}
               />
 
               <Input
-                value={''}
                 type="text"
-                name="unitName"
+                name="unidadeUser"
                 disabled
                 label="Nome da Unidade"
                 placeholder='Digite aqui'
+                defaultValue={dataUser?.unidade}
               />
 
               <Input
-                value={''}
                 type="text"
-                name="sectorName"
+                name="setorUser"
                 disabled
                 label="Setor"
                 placeholder='Digite aqui'
+                defaultValue={dataUser?.setor}
               />
 
               <Input
-                value={''}
                 type="text"
-                name="ordername"
+                name="nome"
                 label="Nome do pedido"
                 placeholder='Digite aqui'
               />
 
               <Input
-                value={''}
                 type="text"
-                name="qtdPages"
+                name="qtd_paginas"
                 label="Quantidade de paginas"
                 placeholder='Digite aqui'
               />
 
               <Input
-                value={''}
                 type="text"
-                name="qtdCopy"
+                name="qtd_copias"
                 label="Qunatidade de copias"
                 placeholder='Digite aqui'
               />
 
-              <Input
-                value={''}
-                type="text"
-                name="typeService"
-                label="Tipo do Serviço"
-                placeholder='Digite aqui'
-              />
+              <Select
+                label='label'
+                name='id_servico'
+                placeholder="Status"
+                onChange={handleOnValue}
+              >
+                <option value={0}>Selecione uma opção</option>
+                {services.map((row) => (
+                  <option key={row.id_servico} value={row.valor_unitario}>{row.descricao}</option>
+                ))}
+              </Select>
 
               <Input
-                value={''}
                 type="text"
-                name="unitValue"
+                name="valor"
                 label="Valor Unitario"
                 placeholder='Digite aqui'
+                value={`R$: ${value}`}
               />
 
               <Input
-                value={''}
                 type="text"
                 name="totalValue"
                 disabled
                 label="Valor Total"
                 placeholder='Digite aqui'
+                // defaultValue={value}
               />
 
               <TextArea 
                 defaultValue={''}
-                name="note"
+                name="observacao"
                 label="Observação"
                 placeholder='Digite aqui'
               />
             </div>
             
-            <ButtonDefault 
+            {/* <ButtonDefault 
               type='submit'
               status='concluido'
               text='Salvar'
-            />
+            /> */}
+
+            <ButtonSubmit 
+              type="submit"
+              loading={load}
+            >
+                Continuar
+            </ButtonSubmit>
           </Form>
         </PanelLeft>
 
@@ -204,6 +240,7 @@ export default function NewRequest() {
             label="Clique no arquivo para realizar o Download"
  
           />
+          
         </PanelRight>
 
       </Content>

@@ -1,17 +1,17 @@
 import { createContext, ReactNode, useCallback, useContext, useState } from 'react';
-import { api } from '../services/api';
+import api from '../services/api';
 
 interface User {
   id: string;
   nome: string;
   avatar: string;
   email: string;
-  profiles: any;
+  profile: string;
 }
 
 interface AuthState {
-  nome?: string;
-  user?: User;
+  token: string;
+  user: User;
 }
 
 interface SignInCredentials {
@@ -32,7 +32,7 @@ interface TransactionsProviderProps {
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
-let user: User;
+// let user: User;
 
 function AuthProvider({ children }: TransactionsProviderProps) {
   const [data, setData] = useState<AuthState>(() => {
@@ -40,6 +40,7 @@ function AuthProvider({ children }: TransactionsProviderProps) {
     const user = localStorage.getItem('@Acopy:user');
 
     if (token && user) {
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       return { token, user: JSON.parse(user) }
     }
 
@@ -54,12 +55,17 @@ function AuthProvider({ children }: TransactionsProviderProps) {
       senha,
     });
 
-    const { nome, token } = response.data.result;
+    const { user, token } = response.data.result;
 
     localStorage.setItem('@Acopy:token', token);
-    localStorage.setItem('@Acopy:user', JSON.stringify(nome));
+    localStorage.setItem('@Acopy:user', JSON.stringify(user));
 
-    setData({ nome })
+    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+    setData({ 
+      user, 
+      token
+    })
   }, [typeInt]);
 
   const signOut = useCallback(() => {
@@ -70,7 +76,7 @@ function AuthProvider({ children }: TransactionsProviderProps) {
   }, [])
 
   return (
-    <AuthContext.Provider value={{ user, signIn, signOut, typeInt, setTypeInt }}>
+    <AuthContext.Provider value={{ user: data.user, signIn, signOut, typeInt, setTypeInt }}>
       {children}
     </AuthContext.Provider>
   )

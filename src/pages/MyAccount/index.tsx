@@ -1,10 +1,11 @@
-
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import IconArrowLeft from '../../assets/icons/IconArrowLeft';
 import ButtonDefault from '../../components/form/ButtonDefault';
 import Input from '../../components/form/Input';
 import { Form } from '@unform/web';
+import { useAuth } from '../../hooks/Auth';
+import api from '../../services/api';
 
 import { 
   Container,
@@ -14,25 +15,27 @@ import {
 } from './styles';
 
 interface MyAccountData {
-  name: string;
+  nome: string;
   email: string;
-  phone: string;
-  responsible: string;
+  telefone: string;
+  setor: string;
+  unidade: string;
 }
 
 export default function MyAccount() {
+  const { user } = useAuth()
   const history = useHistory()
-  const [formData, setFormData] = useState<MyAccountData>({
-    name: '',
-    email: '',
-    phone: '',
-    responsible: '',
-  })
+  const [load, setLoad] = useState(true)
+  const [data, setData] = useState<MyAccountData>()
 
-  function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const { name, value } = event.target;
-    setFormData({...formData, [name]: value});
-  }
+  useEffect(() => {
+    setLoad(true)
+    api.get(`${user.profile}/${user.id}`).then((res) => {
+      setData(res.data.result)
+    })
+    setLoad(false)
+  }, [])
+
   return (
     <Container>
       <Content>
@@ -42,39 +45,39 @@ export default function MyAccount() {
 
           <div className="field">
             <Input
-              value={formData.name}
               type="text"
-              name="name"
+              name="nome"
+              defaultValue={data?.nome}
+              disabled
               label="Nome da Unidade"
               placeholder='Digite aqui'
-              onChange={handleInputChange}
             />
 
             <Input
-              value={formData.name}
               type="email"
               name="email"
+              defaultValue={data?.email}
+              disabled
               label="E-mail"
               placeholder='Digite aqui'
-              onChange={handleInputChange}
             />
 
             <Input
-              value={formData.name}
               type="text"
-              name="phone"
+              name="telefone"
+              defaultValue={data?.telefone}
+              disabled
               label="Telefone"
               placeholder='Digite aqui'
-              onChange={handleInputChange}
             />
 
             <Input
-              value={formData.name}
               type="text"
-              name="responsible"
-              label="Responsável"
+              name="setor"
+              defaultValue={data?.setor}
+              disabled
+              label="setor"
               placeholder='Digite aqui'
-              onChange={handleInputChange}
             />
           </div>
         </Form>

@@ -1,40 +1,44 @@
-import styled, { css } from "styled-components";
-
-interface Props {
-  isActive?: boolean;
-  isSelect?: boolean;
-}
+import styled from "styled-components";
 
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
-  background: #f2f5fc;
+  background: #F2F5FC;
   padding: 40px;
+
 `;
 
 export const SectionFilter = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
   display: grid;
-  grid-template-columns: 15% 60% 5% 20%;
+  grid-template-columns: 15% 37% 25% 5% 15%;
   align-items: center;
   transition: all 0.2s;
 
-  .TitleHome {
+  .titleMyRequest {
     font-size: 30px;
     font-weight: bold;
     color: var(--darkBlack);
   }
 
-  @media (max-width: 980px) {
+  @media (max-width: 1000px) {
     grid-template-columns: 1fr 1fr;
     grid-template-areas:
-      "tt sr"
-      "ft ft";
+      "tt bt bt"
+      "ft ft sr";
     gap: 22px;
 
-    .TitleHome {
+    .titleMyRequest {
       grid-area: tt;
+    }
+
+    >button {
+      grid-area: bt;
     }
   }
 `;
@@ -45,18 +49,17 @@ export const Filter = styled.div`
   justify-content: flex-end;
   gap: 22px;
 
-  @media (max-width: 980px) {
+  @media (max-width: 1000px) {
     grid-area: ft;
   }
-  transition: all 0.2s;
 `;
 
 export const Separator = styled.div`
   width: 1px;
   height: 34px;
-  background: #f2f5fc;
-
-  @media (max-width: 980px) {
+  background: var(--gray);
+  margin: 0 auto;
+  @media (max-width: 1000px) {
     display: none;
   }
 `;
@@ -65,19 +68,10 @@ export const ContentSearch = styled.div`
   display: flex;
   align-items: center;
 
-  @media (max-width: 980px) {
+  @media (max-width: 1000px) {
     grid-area: sr;
   }
-  transition: all 0.2s;
 `;
-
-export const Main = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-
-  height: 100%;
-`
 
 export const SectionTable = styled.div`
   display: flex;
@@ -89,7 +83,7 @@ export const SectionTable = styled.div`
   margin-left: -12px;
   margin-right: -12px;
 
-  @media (max-width: 1540px) {
+  @media (max-width: 1260px) {
     overflow-x: scroll;
 
     ::-webkit-scrollbar {
@@ -110,7 +104,7 @@ export const SectionTable = styled.div`
     scrollbar-width: thin;
   }
 
-  @media (max-width: 980px) {
+  @media (max-width: 1000px) {
     margin-top: 40px;
   }
 
@@ -136,7 +130,6 @@ export const SectionTable = styled.div`
           white-space: nowrap;
           font-size: 16px;
           font-weight: normal;
-
         }
         
         transition: all 0.3s;
@@ -154,63 +147,13 @@ export const SectionTable = styled.div`
 export const SectionPagination = styled.div`
   display: flex;
   align-items: center;
+  width: 100%;
+  height: 60px;
+
   margin-top: 20px;
-`;
+  padding: 40px 0;
 
-export const PaginationButton = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-`;
-
-export const PaginationItem = styled.button<Props>`
-  display: grid;
-  place-items: center;
-  font-size: 1rem;
-  font-weight: 500;
-  color: var(--darkGray);
-
-  background: transparent;
-  padding: .375rem;
-  border-radius: .2rem;
-
-  border: none;
-  transition: filter 0.3s;
-  &:hover {
-    transition: all 0.3s;
-    filter: brightness(0.9);
-    background: rgba(10, 191, 158, 0.1);
-    color: var(--green);
+  h1 {
+    font-size: 1rem;
   }
-
-  ${(props) =>
-    props.isSelect && css`
-      background: rgba(10, 191, 158, 0.1);
-      color: var(--green);
-      border: 0;
-    `};
-    
-  ${(props) =>
-    props.isActive && {
-      background: "#bfbfcc",
-      color: "#E1E3E5",
-    }};
-`;
-
-export const ButtonPagination = styled.button<Props>`
-  display: grid;
-  place-items: center;
-
-  background: transparent;
-  border: none;
-  padding: .8rem;
-  
-  font-size: 1rem;
-  font-weight: 500;
-  color: var(--darkGray);
-
-  ${props => props.isActive && css`
-      cursor: not-allowed;
-      opacity: 0.4;
-  `}
 `;

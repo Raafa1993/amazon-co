@@ -39,7 +39,7 @@ export const PanelLeft = styled.div`
     gap: 22px;
 
     @media (max-width: 680px) {
-      margin-top: 24px;
+      margin-top: 20px;
     }
 
     h2 {

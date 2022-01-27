@@ -1,4 +1,5 @@
 import { useState } from "react";
+import api from "../../../services/api";
 import ButtonDefault from "../ButtonDefault";
 import InputTextarea from "../InputTextarea";
 import {
@@ -9,32 +10,49 @@ import {
   SectionButtonsModal,
 } from "./styles";
 
-interface ModalProps {
-  id: string;
-  onClose: () => void;
-  openModal: boolean;
+interface DataModalProps {
   title: string;
   subtitle?: string;
   textArea?: boolean;
   buttonSend?: string;
   buttonCancel?: string;
-
   message: {
-    titleMessage: string;
+    titleMessage?: string;
     subtitleMessage?: string;
   };
+}
+
+interface ModalProps {
+  id: string;
+  idRequest?: number;
+  onClose: () => void;
+  openModal: boolean;
+  // title: string;
+  // subtitle?: string;
+  // textArea?: boolean;
+  // buttonSend?: string;
+  // buttonCancel?: string;
+
+  // message: {
+  //   titleMessage: string;
+  //   subtitleMessage?: string;
+  // };
+
+  dataModal: DataModalProps;
 }
 
 export default function Modal({
   id,
   onClose,
+  idRequest,
   openModal,
-  title,
-  subtitle,
-  textArea,
-  buttonSend,
-  buttonCancel,
-  message,
+  // title,
+  // subtitle,
+  // textArea,
+  // buttonSend,
+  // buttonCancel,
+  // message,
+  dataModal
 }: ModalProps) {
   const handleCloseModal = (e: any) => {
     if (e.target.id === id) {
@@ -43,15 +61,25 @@ export default function Modal({
   };
 
   const [submit, setSubmit] = useState(true);
+  const [description, setDescription] = useState('');
 
   function handleOnCloseMessage() {
     setSubmit(!submit);
     onClose();
   }
 
+  function offSide() {
+    api.post(`pedido-impedimento`,{
+      "id_pedido": id,
+      "descricao": description
+    }).then((res) => {
+      console.log(res)
+    })
+  }
+
   return (
     <>
-      {submit == true ? (
+      {submit === true ? (
         <ContainerOverlay
           id={id}
           openModal={openModal}
@@ -59,14 +87,14 @@ export default function Modal({
         >
           <Container openModal={openModal}>
             <TitleModal>
-              <h1>{title}</h1>
-              {subtitle && <span>{subtitle}</span>}
+              <h1>{dataModal?.title}</h1>
+              {dataModal?.subtitle && <span>{dataModal?.subtitle}</span>}
             </TitleModal>
 
-            {textArea && (
+            {dataModal?.textArea && (
               <SectionTextArea>
                 <InputTextarea
-                  onChangeText={value => console.log(value)}
+                  onChangeText={value => setDescription(value)}
                   placeholder="Digite aqui"
                   value={""}
                 />
@@ -74,18 +102,18 @@ export default function Modal({
             )}
 
             <SectionButtonsModal>
-              {buttonSend && (
+              {dataModal?.buttonSend && (
                 <ButtonDefault
-                  status="Concluido"
-                  text={buttonSend}
-                  onClick={() => setSubmit(!submit)}
+                  status="concluido"
+                  text={dataModal?.buttonSend}
+                  onClick={offSide}
                 />
               )}
 
-              {buttonCancel && (
+              {dataModal?.buttonCancel && (
                 <ButtonDefault
-                  status="Pendente"
-                  text={buttonCancel}
+                  status="pendente"
+                  text={dataModal?.buttonCancel}
                   onClick={onClose}
                 />
               )}
@@ -100,13 +128,13 @@ export default function Modal({
         >
           <Container openModal={openModal} onClick={handleCloseModal}>
             <TitleModal>
-              <h1>{message.titleMessage}</h1>
-              {message.subtitleMessage && <span>{subtitle}</span>}
+              <h1>{dataModal?.message.titleMessage}</h1>
+              {dataModal?.message.subtitleMessage && <span>{dataModal?.subtitle}</span>}
             </TitleModal>
 
             <SectionButtonsModal>
               <ButtonDefault
-                status="Concluido"
+                status="concluido"
                 text={"Continuar"}
                 onClick={handleOnCloseMessage}
               />

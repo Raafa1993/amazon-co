@@ -76,7 +76,7 @@ export const Separator = styled.div`
   margin: 0 30px;
 `;
 
-export const Profile = styled.button`
+export const Profile = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
@@ -84,6 +84,7 @@ export const Profile = styled.button`
   border: none;
   background: transparent;
 
+  cursor: pointer;
   position: relative;
 `;
 

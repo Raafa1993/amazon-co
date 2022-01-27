@@ -1,7 +1,6 @@
 import styled, { css } from "styled-components";
 
 interface Props {
-    value: string;
     isField: boolean;
     isFocused: boolean;
     isDisabled?: boolean;

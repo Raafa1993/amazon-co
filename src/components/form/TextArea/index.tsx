@@ -1,7 +1,8 @@
-import React, { TextareaHTMLAttributes, useCallback, useRef, useState } from 'react';
+import React, { TextareaHTMLAttributes, useCallback, useEffect, useRef, useState } from 'react';
 
-import { Container } from './styles'
+import { Container, Error } from './styles'
 import { IconBaseProps } from 'react-icons/lib';
+import { useField } from '@unform/core';
 
 interface TextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   name: string;
@@ -14,6 +15,8 @@ const TextArea: React.FC<TextAreaProps> = ({ name, label, icon: Icon, containerS
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [isFocused, setIsFocused] = useState(false);
   const [isField, setIsField] = useState(false);
+  const { fieldName, defaultValue, error, registerField, } = useField(name)
+
 
   const handleInputFocus = useCallback(() => {
     setIsFocused(true);
@@ -25,11 +28,21 @@ const TextArea: React.FC<TextAreaProps> = ({ name, label, icon: Icon, containerS
     setIsField(!!inputRef.current?.value);
   }, []);
 
+  useEffect(() => {
+    registerField({
+      name: fieldName,
+      ref: inputRef.current,
+      path: 'value',
+    });
+
+    setIsField(true)
+  }, [fieldName, registerField]);
+
 
   return (
     <Container
       style={containerStyle}
-    //   isErrored={!!error}
+      isErrored={!!error}
       isField={isField}
       isFocused={isFocused}
     >
@@ -41,17 +54,17 @@ const TextArea: React.FC<TextAreaProps> = ({ name, label, icon: Icon, containerS
         onBlur={handleInputBlur}
         id={name}
         name={name}
-        // defaultValue={defaultValue}
+        defaultValue={defaultValue}
         ref={inputRef}
         {...rest}
       />
 
 
-      {/* {error && (
-        <Error title={error}>
-          <FiAlertCircle color="c53030" size={20} />
+      {error && (
+        <Error>
+          <span>{error}</span>
         </Error>
-      )} */}
+      )}
     </Container>
   )
 }

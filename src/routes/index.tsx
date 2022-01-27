@@ -1,4 +1,5 @@
-import { Route, Switch } from "react-router-dom";
+import { Switch } from "react-router-dom";
+import PrivateRoutes from "./PrivateRoutes";
 import Layout from "../components/Layout";
 import AppostileRequest from "../pages/AppostileRequest";
 import ForgottenPassword from "../pages/ForgottenPassword";
@@ -9,21 +10,31 @@ import MyRequests from "../pages/MyRequests";
 import NewRequest from "../pages/NewRequest";
 import SignIn from "../pages/SignIn";
 import SignInUp from "../pages/SignInUp";
+import HomeUser from "../pages/HomeUser";
+
+import { useAuth } from '../hooks/Auth'
 
 function Routes({ props }: any) {
+  const { user } = useAuth()
+  
   return (
     <Switch>
-      <Route path="/" exact component={SignIn} />
-      <Route path="/cadastrar" component={SignInUp} />
-      <Route path="/recuperar-senha" exact component={ForgottenPassword} />
+      <PrivateRoutes path="/" exact component={SignIn} />
+      <PrivateRoutes path="/cadastrar" component={SignInUp} />
+      <PrivateRoutes path="/recuperar-senha" component={ForgottenPassword} />
 
       <Layout {...props}>
-        <Route path="/home" exact component={Home} />
-        <Route path="/minha-conta" exact component={MyAccount} />
-        <Route path="/pedido/:slug" exact component={AppostileRequest} />
-        <Route path="/meus-pedidos" exact component={MyRequests} />
-        <Route path="/meus-pedidos/:slug" exact component={MyAppostileRequest} />
-        <Route path="/novo-pedido" exact component={NewRequest} />
+        {user?.profile === "usuario" ? (
+        <PrivateRoutes path="/home" component={HomeUser} isPrivate  />
+        ) : (
+          <PrivateRoutes path="/home" component={Home} isPrivate  />
+        )}
+
+        <PrivateRoutes path="/minha-conta" component={MyAccount} isPrivate  />
+        <PrivateRoutes path="/pedido/:id" component={AppostileRequest} isPrivate  />
+        <PrivateRoutes path="/meus-pedidos" component={MyRequests} isPrivate  />
+        <PrivateRoutes path="/meus-pedidos/:id" component={MyAppostileRequest} isPrivate  />
+        <PrivateRoutes path="/novo-pedido" component={NewRequest} isPrivate  />
       </Layout>
     </Switch>
   );

@@ -31,9 +31,7 @@ interface IMenu {
 
 export default function Header({ menus, path }: ISiderbar) {
   const [hasVisible, setHasVisible] = useState(false);
-  const { signOut } = useAuth();
-  const userName = localStorage.getItem('@Acopy:user');
-
+  const { signOut, user } = useAuth();
 
   return (
     <Container>
@@ -62,21 +60,21 @@ export default function Header({ menus, path }: ISiderbar) {
                 <img src="https://avatars.githubusercontent.com/u/37309024?v=4" alt="profile" />
             </Image>
             <Info hasVisible={hasVisible}>
-                <h2>{(userName)}</h2>
+                <h2>{(user.nome)}</h2>
                 <IconArrowLeft />
             </Info>
 
-            <MenuProfile
-              hasVisible={hasVisible}
+          <MenuProfile
+            hasVisible={hasVisible}
+          >
+            <button
+              className="buttonSignUp"
+              onClick={signOut}
             >
-              <button
-                className="buttonSignUp"
-                onClick={signOut}
-              >
-                <IconArrowLeft />
-                Sair
-              </button>
-            </MenuProfile>
+              <IconArrowLeft />
+              Sair
+            </button>
+          </MenuProfile>
 
           </Profile>
       </ContentRight>

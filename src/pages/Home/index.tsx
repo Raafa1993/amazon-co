@@ -7,7 +7,7 @@ import ButtonNotification from "../../components/form/ButtonNotification";
 import InputDefault from "../../components/form/InputDefault";
 import Modal from "../../components/form/Modal";
 import SelectDefault from "../../components/form/SelectDefault";
-import { api } from "../../services/api";
+import api from "../../services/api";
 
 import {
   Container,
@@ -24,7 +24,7 @@ import {
 } from "./styles";
 
 interface OrderProps {
-  id_usuario: string;
+  id_grafica: string;
   unidade: string;
   setor: string;
   id_pedido: string;
@@ -35,6 +35,18 @@ interface OrderProps {
   status: string;
 }
 
+interface ModalProps {
+  title?: string;
+  subtitle?: string;
+  textArea?: boolean;
+  buttonSend?: string;
+  buttonCancel?: string;
+  message?: {
+    titleMessage?: string;
+    subtitleMessage?: string;
+  };
+}
+
 const limit = 9;
 
 export default function Home() {
@@ -42,6 +54,8 @@ export default function Home() {
   const [modal, setModal] = useState(false);
   const [load, setLoad] = useState(true);
   const [data, setData] = useState<OrderProps[]>([]);
+  const [idModal, setIdModal] = useState(Number)
+  const [dataModal, setDataModal] = useState<ModalProps>()
   const [status, setStatus] = useState("pendente");
 
   const [total, setTotal] = useState(0);
@@ -54,9 +68,26 @@ export default function Home() {
       .get(`pedido-grafica?status=${status}&ordem=criado&pagina=1`)
       .then(res => {
         setData(res.data.result.data);
-        setLoad(false);
       });
+      setLoad(false);
   }, [status]);
+
+  function handleOnOffSide(id: any) {
+    setIdModal(id)
+    setModal(!modal)
+
+    setDataModal({
+      title:"Deseja enviar um empedimento?",
+      subtitle:"Caso o arquivo esteja com algum defeito ou dúvidas, mande uma mensagem avisando a Escola",
+      textArea:true,
+      buttonSend:"Enviar",
+      buttonCancel:"Cancelar",
+      message:{
+        titleMessage:"Impedimento registrado com sucesso",
+        subtitleMessage:"Uma boa descrição",
+      }
+    })
+  }
 
   return (
     <Container>
@@ -137,7 +168,7 @@ export default function Home() {
                       onClick={() => history.push(`/pedido/${row.id_pedido}`)}
                     />
                   </td>
-                  <td>{row.id_usuario}</td>
+                  <td>{row.id_grafica}</td>
                   <td>{row.unidade}</td>
                   <td>{row.setor}</td>
                   <td>{row.id_pedido}</td>
@@ -164,7 +195,7 @@ export default function Home() {
                   <td className="buttonIcons">
                     <ButtonNotification
                       icon={<IconBallonMessage />}
-                      onClick={() => setModal(!modal)}
+                      onClick={() => handleOnOffSide(row.id_pedido)}
                     />
                   </td>
                   <td>
@@ -215,17 +246,18 @@ export default function Home() {
         id="overlayModal"
         onClose={() => setModal(!modal)}
         openModal={modal}
-        title={"Tem certezxa que deseja Cancelar esse pedido?"}
-        subtitle={
-          "Para cancelar é necessario colocar um procedimento avisando o motivo do cancelamento"
-        }
-        textArea={true}
-        buttonSend={"Enviar"}
-        buttonCancel={"Cancelar"}
-        message={{
-          titleMessage: "Pedido cancelado com sucesso!",
-          subtitleMessage: "Uma boa descrição",
-        }}
+        dataModal={dataModal as any}
+        // title={"Tem certezxa que deseja Cancelar esse pedido?"}
+        // subtitle={
+        //   "Para cancelar é necessario colocar um procedimento avisando o motivo do cancelamento"
+        // }
+        // textArea={true}
+        // buttonSend={"Enviar"}
+        // buttonCancel={"cancelar"}
+        // message={{
+        //   titleMessage: "Pedido cancelado com sucesso!",
+        //   subtitleMessage: "Uma boa descrição",
+        // }}
       />
     </Container>
   );

@@ -19,10 +19,10 @@ export const Container = styled.div`
     display: flex;
     flex-direction: column;
     width: 40%;
-    margin-top: 60px;
+    margin-top: 40px;
 
     @media (max-width: 680px) {
-      margin-top: 24px;
+      margin-top: 20px;
     }
 
     h2 {

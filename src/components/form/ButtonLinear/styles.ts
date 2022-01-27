@@ -9,7 +9,7 @@ export const Container = styled.button<PropsButton>`
   display: flex;
   align-items: center;
   justify-content: center;
-  max-width: 100%;
+  width: 100%;
   height: 40px;
   font-size: 1rem;
   font-weight: bold;

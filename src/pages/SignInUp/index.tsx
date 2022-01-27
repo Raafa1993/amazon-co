@@ -1,18 +1,19 @@
-import React, { useCallback, useRef, useState } from "react";
-import ArteLogin from "../../assets/images/ArteLogin.png";
-import LogoAmazon from "../../assets/icons/LogoAmazon";
-import BgLogin from "../../assets/images/Bglogin.png";
+import { useCallback, useRef, useState } from "react";
+import { useHistory } from "react-router-dom";
+import api from "../../services/api";
+import { toast } from 'react-toastify'
 import Input from "../../components/form/Input";
 import ButtonSubmit from "../../components/form/ButtonSubmit";
-import { useHistory } from "react-router-dom";
 import * as Yup from "yup";
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 import getValidationErrors from "../../Utils/getValidationErrors";
-import { toast } from 'react-toastify'
-import { api } from "../../services/api";
 
+import ArteLogin from "../../assets/images/ArteLogin.png";
+import LogoAmazon from "../../assets/icons/LogoAmazon";
+import BgLogin from "../../assets/images/Bglogin.png";
 import IconArrowLeft from "../../assets/icons/IconArrowLeft";
+
 import {
   Container,
   BgContent,
@@ -25,36 +26,10 @@ import {
   BackToPage,
 } from "./styles";
 
-interface SignInFormData {
-  nome: string;
-  email: string;
-  telefone: string;
-  unidade: string;
-  setor: string;
-  id_endereco: string;
-  senha: string;
-  confirmeSenha: string;
-}
-
 export default function SignInUp() {
   const formRef = useRef<FormHandles>(null);
   const history = useHistory();
   const [load, setLoad] = useState(false);
-  const [formData, setFormData] = useState<SignInFormData>({
-    nome: "",
-    email: "",
-    telefone: "",
-    unidade: "",
-    setor: "",
-    id_endereco: "",
-    senha: "",
-    confirmeSenha: "",
-  });
-
-  function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value });
-  }
 
   const handleSubmit = useCallback(async (data: object) => {
     try {
@@ -125,69 +100,52 @@ export default function SignInUp() {
             <Form ref={formRef} onSubmit={handleSubmit}>
               <div className="field">
                 <Input
-                  value={formData.nome}
                   type="text"
                   name="nome"
                   label="Nome do Usuário"
-                  onChange={handleInputChange}
-                  // error={errors}
                 />
 
                 <Input
-                  value={formData.telefone}
                   type="text"
                   name="telefone"
                   mask="fone"
                   label="Telefone"
-                  onChange={handleInputChange}
                 />
 
                 <Input
-                  value={formData.email}
                   type="email"
                   name="email"
                   label="E-mail"
-                  onChange={handleInputChange}
                 />
 
                 <Input
-                  value={formData.unidade}
                   type="text"
                   name="unidade"
                   label="Unidade"
-                  onChange={handleInputChange}
                 />
 
                 <Input
-                  value={formData.setor}
                   type="text"
                   name="setor"
                   label="Setor"
-                  onChange={handleInputChange}
                 />
 
                 <Input
-                  value={formData.id_endereco}
                   type="text"
                   name="id_endereco"
                   label="ID"
-                  onChange={handleInputChange}
                 />
 
                 <Input
-                  value={formData.senha}
                   type="password"
                   name="senha"
                   label="Senha"
-                  onChange={handleInputChange}
                 />
 
                 <Input
-                  value={formData.confirmeSenha}
                   type="password"
                   name="confirmeSenha"
                   label="Confirmar senha"
-                  onChange={handleInputChange}
                 />
 
                 <ButtonSubmit 
