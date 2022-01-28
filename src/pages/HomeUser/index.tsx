@@ -6,9 +6,11 @@ import ButtonDefault from "../../components/form/ButtonDefault";
 import ButtonLinear from "../../components/form/ButtonLinear";
 import ButtonNotification from "../../components/form/ButtonNotification";
 import InputDefault from "../../components/form/InputDefault";
-import Modal from "../../components/form/Modal";
 import SelectDefault from "../../components/form/SelectDefault";
 import api from "../../services/api";
+import { Scrollbars } from 'react-custom-scrollbars';
+
+
 import {
   ButtonPagination,
   PaginationButton,
@@ -23,6 +25,7 @@ import {
   SectionPagination,
 } from "./styles";
 import IconEyer from "../../assets/icons/IconEyer";
+import ModalUser from "../../components/form/ModalUser";
 
 interface OrderProps {
   id_usuario: string;
@@ -34,18 +37,14 @@ interface OrderProps {
   valor: number;
   criado: string;
   status: string;
+  qtdImpedimentos: number;
 }
 
 interface ModalProps {
   title?: string;
-  subtitle?: string;
   textArea?: boolean;
   buttonSend?: string;
   buttonCancel?: string;
-  message?: {
-    titleMessage?: string;
-    subtitleMessage?: string;
-  };
 }
 
 const limit = 9;
@@ -55,37 +54,34 @@ export default function HomeUser() {
   const [modal, setModal] = useState(false);
   const [data, setData] = useState<OrderProps[]>([]);
   const [load, setLoad] = useState(true);
-  const [idModal, setIdModal] = useState(Number)
-  const [dataModal, setDataModal] = useState<ModalProps>()
-  const [status, setStatus] = useState('pendente')
+  const [idModal, setIdModal] = useState(0);
+  const [dataModal, setDataModal] = useState<ModalProps>();
+  const [status, setStatus] = useState("todos");
 
   const [total, setTotal] = useState(0);
   const [pages, setPages] = useState([0, 1, 2, 3, 4]);
   const [currentPage, setCurrentPage] = useState(0);
 
   useEffect(() => {
-    setLoad(true)
-    api.get(`pedido-usuario?status=${status}&ordem=criado&pagina=1`).then(res => {
-      setData(res.data.result.data)
-    })
-    setLoad(false)
-  }, [status])
+    setLoad(true);
+    api
+      .get(`pedido-usuario?status=${status}&ordem=criado&pagina=1`)
+      .then(res => {
+        setData(res.data.result.data);
+      });
+    setLoad(false);
+  }, [status]);
 
   function handleOnOffSide(id: any) {
-    setIdModal(id)
-    setModal(!modal)
+    setIdModal(id);
+    setModal(!modal);
 
     setDataModal({
-      title:"Deseja enviar um empedimento?",
-      subtitle:"Caso o arquivo esteja com algum defeito ou dúvidas, mande uma mensagem avisando a Escola",
-      textArea:true,
-      buttonSend:"Enviar",
-      buttonCancel:"Cancelar",
-      message:{
-        titleMessage:"Impedimento registrado com sucesso",
-        subtitleMessage:"Uma boa descrição",
-      }
-    })
+      title: "Houve um impedimento",
+      textArea: true,
+      buttonSend: "Ir para detalhes do pedido",
+      buttonCancel: "Cancelar",
+    });
   }
 
   return (
@@ -94,10 +90,11 @@ export default function HomeUser() {
         <h1 className="titleMyRequest">Meus Pedidos</h1>
         <Filter>
           <SelectDefault
-            value=""
-            placeholder="Status"
+            value="todos"
+            placeholder="Selecione Status"
             onChangeText={value => setStatus(value)}
           >
+            <option value="concluido">Concluido</option>
             <option value="pendente">Pendente</option>
             <option value="impedimento">Impedimento</option>
             <option value="todos">Todos</option>
@@ -134,69 +131,68 @@ export default function HomeUser() {
       </SectionFilter>
 
       <SectionTable>
-        <table>
-          <thead>
-            <tr>
-              <th>Visualizar</th>
-              <th>Pedido</th>
-              <th>Qtd. de Páginas</th>
-              <th>Qtd. Cópias</th>
-              <th>Valor Total</th>
-              <th>Data do pedido</th>
-              <th>Status</th>
-              <th>Impedimento</th>
-              <th>Cancelar</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((row) => (
-              <tr key={row.id_pedido}>
-                <td>
-                  <ButtonDefault
-                    status="visualizar"
-                    border={true}
-                    text="visualizar"
-                    icon={<IconEyer />}
-                    onClick={() => history.push(`/pedido/${row.id_pedido}`)}
-                  />
-                </td>
-                <td>{row.id_pedido}</td>
-                <td>{row.qtd_paginas}</td>
-                <td>{row.qtd_copias}</td>
-                <td>
-                  {new Intl.NumberFormat("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  }).format(row.valor)}
-                </td>
-                <td>
-                  {new Intl.DateTimeFormat("pt-BR").format(
-                    new Date(row.criado),
-                  )}
-                </td>
-                <td>
-                  <ButtonLinear
-                    status={row.status}
-                    border={true}
-                    text={row.status}
-                  />
-                </td>
-                <td>
-                  <ButtonNotification
-                    icon={<IconBallonMessage />}
-                    onClick={() => handleOnOffSide(row.id_pedido)}
-                  />
-                </td>
-                <td>
-                  <ButtonNotification
-                    icon={<IconCancel />}
-                    onClick={() => setModal(!modal)}
-                  />
-                </td>
+          <table>
+            <thead>
+              <tr>
+                <th align="center" style={{width: '10px'}}>Visualizar</th>
+                <th>Pedido</th>
+                <th>Qtd. de Páginas</th>
+                <th>Qtd. Cópias</th>
+                <th>Valor Total</th>
+                <th>Data do pedido</th>
+                <th>Status</th>
+                <th>Impedimento</th>
+                <th>Cancelar</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {data.map(row => (
+                <tr key={row.id_pedido}>
+                  <td>
+                    <ButtonDefault
+                      status="visualizar"
+                      border={true}
+                      text="visualizar"
+                      icon={<IconEyer />}
+                      onClick={() => history.push(`/pedido/${row.id_pedido}`)}
+                    />
+                  </td>
+                  <td>{row.id_pedido}</td>
+                  <td>{row.qtd_paginas}</td>
+                  <td>{row.qtd_copias}</td>
+                  <td>
+                    {new Intl.NumberFormat("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    }).format(row.valor)}
+                  </td>
+                  <td>
+                    {new Intl.DateTimeFormat("pt-BR").format(
+                      new Date(row.criado),
+                    )}
+                  </td>
+                  <td align="center" width={10}>
+                    <ButtonLinear
+                      status={row.status}
+                      border={true}
+                      text={row.status}
+                    />
+                  </td>
+                  <td align="center" width={10}>
+                    <ButtonNotification
+                      icon={<IconBallonMessage />}
+                      mentions={row.qtdImpedimentos}
+                      disabled={row.qtdImpedimentos > 0 ? false : true}
+                      onClick={() => handleOnOffSide(row.id_pedido)}
+                    />
+                  </td>
+                  <td align="center" width={10}>
+                    <ButtonNotification icon={<IconCancel />} disabled />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
       </SectionTable>
 
       <SectionPagination>
@@ -230,23 +226,12 @@ export default function HomeUser() {
         </PaginationButton>
       </SectionPagination>
 
-      <Modal
+      <ModalUser
         id="overlayModal"
         idRequest={idModal}
         onClose={() => setModal(!modal)}
         openModal={modal}
         dataModal={dataModal as any}
-        // title={"Tem certezxa que deseja Cancelar esse pedido?"}
-        // subtitle={
-        //   "Para cancelar é necessario colocar um procedimento avisando o motivo do cancelamento"
-        // }
-        // textArea={true}
-        // buttonSend={"Enviar"}
-        // buttonCancel={"Cancelar"}
-        // message={{
-        //   titleMessage: "Pedido cancelado com sucesso!",
-        //   subtitleMessage: "Uma boa descrição",
-        // }}
       />
     </Container>
   );

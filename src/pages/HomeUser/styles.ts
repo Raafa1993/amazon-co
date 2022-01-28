@@ -83,12 +83,14 @@ export const SectionTable = styled.div`
   margin-left: -12px;
   margin-right: -12px;
 
-  @media (max-width: 1260px) {
+  @media (max-width: 1250px) {
     overflow-x: scroll;
+    overflow-y: hidden;
 
     ::-webkit-scrollbar {
       height: 6px;
       background-color: #f5f5f5;
+      cursor: pointer;
     }
     ::-webkit-scrollbar-thumb {
       background-color: var(--green);

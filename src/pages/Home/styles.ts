@@ -91,6 +91,7 @@ export const SectionTable = styled.div`
 
   @media (max-width: 1540px) {
     overflow-x: scroll;
+    overflow-y: hidden;
 
     ::-webkit-scrollbar {
       height: 6px;

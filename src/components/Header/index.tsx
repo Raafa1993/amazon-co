@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { useAuth } from '../../hooks/Auth';
 
 import IconAlert from "../../assets/icons/IconAlert";
@@ -30,8 +30,14 @@ interface IMenu {
   }
 
 export default function Header({ menus, path }: ISiderbar) {
-  const [hasVisible, setHasVisible] = useState(false);
   const { signOut, user } = useAuth();
+  const history = useHistory()
+  const [hasVisible, setHasVisible] = useState(false);
+
+  function handleOnSignOut() {
+    history.push('/')
+    signOut()
+  }
 
   return (
     <Container>
@@ -69,7 +75,7 @@ export default function Header({ menus, path }: ISiderbar) {
           >
             <button
               className="buttonSignUp"
-              onClick={signOut}
+              onClick={handleOnSignOut}
             >
               <IconArrowLeft />
               Sair

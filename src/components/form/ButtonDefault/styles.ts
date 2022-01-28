@@ -25,6 +25,12 @@ export const Container = styled.button<PropsButton>`
     filter: brightness(0.9);
   }
 
+  &:disabled {
+    opacity: 0.8;
+    cursor: not-allowed;
+    background: #cecece;
+  }
+
   ${props => props.border && css`
     border-radius: 25px;
   `}

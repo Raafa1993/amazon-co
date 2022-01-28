@@ -36,4 +36,9 @@ export const Button = styled.button<PropsButton>`
     display: ${props =>
       props.mentions && props.mentions > 0 ? "inline" : "none"};
   }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
 `;

@@ -53,13 +53,29 @@ export default function SignInUp() {
         abortEarly: false,
       });
 
-      await api.post("/usuario", data);
-      
+      const { nome, email, telefone, unidade, setor, id_endereco, senha, confirmeSenha }: any = data
+
+      const newData = {
+        nome,
+        email,
+        telefone,
+        unidade,
+        setor,
+        id_endereco: parseInt(id_endereco),
+        senha,
+        confirmeSenha
+      }
+
+      const response = await api.post("/usuario", newData);
+
+      console.log(response.data)
+
+
       setLoad(false)
-      toast.error('Cadastro realizado com sucesso!')
+      toast.success('Cadastro realizado com sucesso!')
 
       setTimeout(() => {
-        history.push('/home')
+        history.push('/')
       }, 3000)
 
     } catch(err: any) {

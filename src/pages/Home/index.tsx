@@ -6,6 +6,7 @@ import ButtonDefault from "../../components/form/ButtonDefault";
 import ButtonNotification from "../../components/form/ButtonNotification";
 import InputDefault from "../../components/form/InputDefault";
 import Modal from "../../components/form/Modal";
+import ModalCancel from "../../components/form/ModalCancel";
 import SelectDefault from "../../components/form/SelectDefault";
 import api from "../../services/api";
 
@@ -56,6 +57,8 @@ export default function Home() {
   const [data, setData] = useState<OrderProps[]>([]);
   const [idModal, setIdModal] = useState(Number)
   const [dataModal, setDataModal] = useState<ModalProps>()
+  const [modalCancel, setModalCancel] = useState(false)
+  const [dataModalCancel, setDataModalCancel] = useState<ModalProps>()
   const [status, setStatus] = useState("pendente");
 
   const [total, setTotal] = useState(0);
@@ -82,6 +85,23 @@ export default function Home() {
       textArea:true,
       buttonSend:"Enviar",
       buttonCancel:"Cancelar",
+      message:{
+        titleMessage:"Impedimento registrado com sucesso",
+        subtitleMessage:"Uma boa descrição",
+      }
+    })
+  }
+
+  function handleOnCancel(id: any) {
+    setIdModal(id)
+    setModalCancel(!modalCancel)
+
+    setDataModalCancel({
+      title:"Tem certeza que deseja Cancelar esse pedido?",
+      subtitle:"Para cancelar é necessario colocar um impedimento avisando o motivo do cancelamento.",
+      textArea:true,
+      buttonSend:"Excluir",
+      buttonCancel:"Voltar",
       message:{
         titleMessage:"Impedimento registrado com sucesso",
         subtitleMessage:"Uma boa descrição",
@@ -158,7 +178,7 @@ export default function Home() {
               </tr>
             </thead>
             <tbody>
-              {data.map((row, key) => (
+              {data.map((row) => (
                 <tr key={row.id_pedido}>
                   <td>
                     <ButtonDefault
@@ -201,7 +221,7 @@ export default function Home() {
                   <td>
                     <ButtonNotification
                       icon={<IconCancel />}
-                      onClick={() => setModal(!modal)}
+                      onClick={() => handleOnCancel(row.id_pedido)}
                     />
                   </td>
                 </tr>
@@ -246,18 +266,16 @@ export default function Home() {
         id="overlayModal"
         onClose={() => setModal(!modal)}
         openModal={modal}
+        idRequest={idModal}
         dataModal={dataModal as any}
-        // title={"Tem certezxa que deseja Cancelar esse pedido?"}
-        // subtitle={
-        //   "Para cancelar é necessario colocar um procedimento avisando o motivo do cancelamento"
-        // }
-        // textArea={true}
-        // buttonSend={"Enviar"}
-        // buttonCancel={"cancelar"}
-        // message={{
-        //   titleMessage: "Pedido cancelado com sucesso!",
-        //   subtitleMessage: "Uma boa descrição",
-        // }}
+      />
+
+      <ModalCancel 
+        id="overlayModal"
+        onClose={() => setModalCancel(!modalCancel)}
+        openModal={modalCancel}
+        idRequest={idModal}
+        dataModal={dataModalCancel as any}
       />
     </Container>
   );

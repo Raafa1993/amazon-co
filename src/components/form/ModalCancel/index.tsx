@@ -32,11 +32,9 @@ interface ModalProps {
 
 interface ResModal {
   message: string;
-  subtitle?: string;
-  status: boolean;
 }
 
-export default function Modal({
+export default function ModalCancel({
   id,
   onClose,
   idRequest,
@@ -53,8 +51,6 @@ export default function Modal({
   const [description, setDescription] = useState("");
   const [data, setData] = useState<ResModal>({
     message: "",
-    subtitle: "",
-    status: false,
   });
 
   function handleOnCloseMessage() {
@@ -62,16 +58,11 @@ export default function Modal({
     onClose();
   }
 
-  function offSide() {
-    api
-      .post(`pedido-impedimento`, {
-        id_pedido: idRequest,
-        descricao: description,
-      })
-      .then(res => {
-        setData(res.data);
-        setSubmit(!setSubmit);
-      });
+  function handleOnCancelRequest() {
+    api.delete(`pedido/${idRequest}`).then((res) => {
+      setData(res.data)
+      setSubmit(!setSubmit);
+    })
   }
 
   return (
@@ -99,16 +90,16 @@ export default function Modal({
             <SectionButtonsModal>
               {dataModal?.buttonSend && (
                 <ButtonDefault
-                  status="concluido"
+                  status="pendente"
                   text={dataModal?.buttonSend}
-                  onClick={offSide}
+                  onClick={handleOnCancelRequest}
                   disabled={description.length > 10 ? false : true}
                 />
               )}
 
               {dataModal?.buttonCancel && (
                 <ButtonDefault
-                  status="pendente"
+                  status="concluido"
                   text={dataModal?.buttonCancel}
                   onClick={onClose}
                 />

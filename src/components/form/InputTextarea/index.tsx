@@ -7,6 +7,7 @@ interface InputProps extends React.HTMLAttributes<HTMLInputElement> {
     value: string | any;
     onChangeText: (value: string) => void;
     className?: string;
+    disabled?: boolean;
 }
 
 const InputTextarea: React.FC<InputProps> = ({
@@ -14,6 +15,7 @@ const InputTextarea: React.FC<InputProps> = ({
     value,
     onChangeText,
     className,
+    disabled,
 }) => {
     const [valueInput, setValueInput] = useState<string>(value);
 
@@ -32,6 +34,7 @@ const InputTextarea: React.FC<InputProps> = ({
                 value={valueInput}
                 onChange={handleOnChange}
                 placeholder={placeholder}
+                disabled={disabled}
             />
         </Container>
     );

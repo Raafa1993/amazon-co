@@ -13,7 +13,6 @@ import { Container, Label } from "./styles";
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
   label: string;
-  value: string;
   isDisabled?: boolean;
   handleOnPassword?: () => void;
   Icon?: React.ComponentType<IconBaseProps>;
@@ -27,7 +26,6 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 export default function InputFile({
   name,
   label,
-  value,
   Icon,
   isDisabled,
   error,
@@ -49,7 +47,7 @@ export default function InputFile({
 
   return (
     <Label htmlFor={name}>{label}
-      <Container value={value} isField={isField} isFocused={isFocused}>
+      <Container isField={isField} isFocused={isFocused}>
 
         <div className="iconInput">
           <IconDownload />
@@ -58,7 +56,7 @@ export default function InputFile({
         <input
           onFocus={handleInputFocus}
           onBlur={handleInputBlur}
-          type='file'
+          type="file"
           ref={inputRef}
           {...rest}
         />
