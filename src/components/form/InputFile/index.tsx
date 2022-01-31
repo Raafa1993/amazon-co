@@ -1,10 +1,8 @@
 import React, {
   InputHTMLAttributes,
   useCallback,
-  useRef,
   useState,
 } from "react";
-import { IconBaseProps } from "react-icons";
 import IconArrowDownload from "../../../assets/icons/IconArrowDownload";
 import IconDownload from "../../../assets/icons/IconDownload";
 
@@ -14,25 +12,21 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
   label: string;
   isDisabled?: boolean;
-  handleOnPassword?: () => void;
-  Icon?: React.ComponentType<IconBaseProps>;
   error?: {
     error: boolean;
     message: string;
     name: string;
   };
+  ref?: any
 }
 
 export default function InputFile({
   name,
   label,
-  Icon,
   isDisabled,
   error,
-  handleOnPassword,
   ...rest
 }: InputProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
   const [isFocused, setIsFocused] = useState(false);
   const [isField, setIsField] = useState(false);
 
@@ -42,7 +36,6 @@ export default function InputFile({
 
   const handleInputBlur = useCallback(() => {
     setIsFocused(false);
-    setIsField(!!inputRef.current?.value);
   }, []);
 
   return (
@@ -56,8 +49,6 @@ export default function InputFile({
         <input
           onFocus={handleInputFocus}
           onBlur={handleInputBlur}
-          type="file"
-          ref={inputRef}
           {...rest}
         />
 

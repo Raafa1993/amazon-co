@@ -77,6 +77,7 @@ export const SectionTable = styled.div`
   display: flex;
   flex-direction: column;
   gap: 15px;
+  height: 100%;
 
   margin-top: 60px;
   padding: 0 12px;
@@ -88,6 +89,7 @@ export const SectionTable = styled.div`
     overflow-y: hidden;
 
     ::-webkit-scrollbar {
+      /* width: 6px; */
       height: 6px;
       background-color: #f5f5f5;
       cursor: pointer;

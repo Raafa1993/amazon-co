@@ -8,14 +8,16 @@ import ButtonNotification from "../../components/form/ButtonNotification";
 import InputDefault from "../../components/form/InputDefault";
 import SelectDefault from "../../components/form/SelectDefault";
 import api from "../../services/api";
-import { Scrollbars } from 'react-custom-scrollbars';
 
+import IconEyer from "../../assets/icons/IconEyer";
+import ModalUser from "../../components/form/ModalUser";
 
 import {
   ButtonPagination,
   PaginationButton,
   PaginationItem,
 } from "../../components/form/Pagination/styles";
+
 import {
   Container,
   SectionFilter,
@@ -24,8 +26,6 @@ import {
   SectionTable,
   SectionPagination,
 } from "./styles";
-import IconEyer from "../../assets/icons/IconEyer";
-import ModalUser from "../../components/form/ModalUser";
 
 interface OrderProps {
   id_usuario: string;
@@ -56,7 +56,10 @@ export default function HomeUser() {
   const [load, setLoad] = useState(true);
   const [idModal, setIdModal] = useState(0);
   const [dataModal, setDataModal] = useState<ModalProps>();
-  const [status, setStatus] = useState("todos");
+
+  const [filterStatus, setFilterStatus] = useState("todos");
+  const [filterOrder, setFilterOrder] = useState("criado");
+
 
   const [total, setTotal] = useState(0);
   const [pages, setPages] = useState([0, 1, 2, 3, 4]);
@@ -65,12 +68,12 @@ export default function HomeUser() {
   useEffect(() => {
     setLoad(true);
     api
-      .get(`pedido-usuario?status=${status}&ordem=criado&pagina=1`)
+      .get(`pedido-usuario?status=${filterStatus}&ordem=${filterOrder}&pagina=1`)
       .then(res => {
         setData(res.data.result.data);
       });
     setLoad(false);
-  }, [status]);
+  }, [filterStatus, filterOrder]);
 
   function handleOnOffSide(id: any) {
     setIdModal(id);
@@ -92,7 +95,7 @@ export default function HomeUser() {
           <SelectDefault
             value="todos"
             placeholder="Selecione Status"
-            onChangeText={value => setStatus(value)}
+            onChangeText={value => setFilterStatus(value)}
           >
             <option value="concluido">Concluido</option>
             <option value="pendente">Pendente</option>
@@ -102,13 +105,12 @@ export default function HomeUser() {
 
           <SelectDefault
             value=""
-            placeholder="Mais recente"
-            onChangeText={value => console.log(value)}
+            placeholder="Selecione Filtro"
+            onChangeText={value => setFilterOrder(value)}
           >
-            <option value="Mais recente">Conteúdo</option>
-            <option value="Pendente">Pendente</option>
-            <option value="Impedimento">Impedimento</option>
-            <option value="Todos">Todos</option>
+            <option value="criado">Mais recente</option>
+            <option value="nome">Nome</option>
+            <option value="usuario">Usuario</option>
           </SelectDefault>
 
           <Separator />

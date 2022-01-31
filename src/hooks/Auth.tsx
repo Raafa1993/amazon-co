@@ -23,6 +23,7 @@ interface AuthContextData {
   user: User;
   signIn(credentials: SignInCredentials): Promise<void>
   signOut(): void;
+  updateUser(user: User): void;
   setTypeInt: any;
   typeInt: any;
 }
@@ -75,8 +76,36 @@ function AuthProvider({ children }: TransactionsProviderProps) {
     setData({} as AuthState)
   }, [])
 
+  const updateUser = useCallback(
+    (user: User) => {
+      localStorage.setItem("@Acopy:user", JSON.stringify(user));
+
+      setData({
+        token: data.token,
+        user,
+      });
+    },
+    [setData, data.token]
+  )
+
+  // const updateUser = useCallback((user: User) => {
+  //   console.log('res', user)
+
+  //     api.get(`usuario/${user.id}`).then((res) => {
+  //       const { nome, avatar, email, profile, } = res.data.result;
+  //       localStorage.setItem("@Acopy:user", JSON.stringify({nome, avatar, email, profile}));
+  //     })
+      
+  //     setData({
+  //       token: data.token,
+  //       user,
+  //     });
+  //   },
+  //   [setData, data.token]
+  // )
+
   return (
-    <AuthContext.Provider value={{ user: data.user, signIn, signOut, typeInt, setTypeInt }}>
+    <AuthContext.Provider value={{ user: data.user, signIn, signOut, typeInt, setTypeInt, updateUser }}>
       {children}
     </AuthContext.Provider>
   )

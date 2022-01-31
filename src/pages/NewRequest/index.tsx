@@ -1,35 +1,35 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import { useAuth } from '../../hooks/Auth';
-import IconArrowLeft from '../../assets/icons/IconArrowLeft';
-import Input from '../../components/form/Input';
-import InputFile from '../../components/form/InputFile';
-import TextArea from '../../components/form/TextArea';
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useHistory } from "react-router-dom";
+import { useAuth } from "../../hooks/Auth";
+import IconArrowLeft from "../../assets/icons/IconArrowLeft";
+import Input from "../../components/form/Input";
+import InputFile from "../../components/form/InputFile";
+import TextArea from "../../components/form/TextArea";
 
 import * as Yup from "yup";
-import { Form } from '@unform/web';
-import { FormHandles } from '@unform/core';
+import { Form } from "@unform/web";
+import { FormHandles } from "@unform/core";
 import getValidationErrors from "../../Utils/getValidationErrors";
-import { toast } from 'react-toastify'
+import { toast } from "react-toastify";
 import api from "../../services/api";
-import ButtonSubmit from '../../components/form/ButtonSubmit';
-import Select from '../../components/form/Select';
+import ButtonSubmit from "../../components/form/ButtonSubmit";
+import Select from "../../components/form/Select";
 
-import { 
+import {
   Container,
   Content,
   PanelLeft,
   PanelRight,
   BackToHome,
-} from './styles';
+} from "./styles";
 
 interface MyAccountData {
-  id_endereco: string,
+  id_endereco: string;
   nome: string;
   telefone: string;
   email: string;
   unidade: string;
-  setor: string
+  setor: string;
 }
 
 interface ServiceProps {
@@ -48,33 +48,37 @@ export default function NewRequest() {
   const formRef = useRef<FormHandles>(null);
   const history = useHistory();
   const { user } = useAuth();
-  const [dataUser, setDataUser] = useState<MyAccountData>()
-  const [services, setServices] = useState<ServiceProps[]>([])
+  const [dataUser, setDataUser] = useState<MyAccountData>();
+  const [services, setServices] = useState<ServiceProps[]>([]);
   const [formData, setFormData] = useState<InputProps>({
-    qtd_paginas: '',
-    qtd_copias: '',
-    id_servico: '',
+    qtd_paginas: "",
+    qtd_copias: "",
+    id_servico: "",
   });
 
   const [currency, setCurrency] = useState<any>(0);
-  const [serviceSelect, setServiceSelect] = useState({valor_unitario: 0})
+  const [serviceSelect, setServiceSelect] = useState({ valor_unitario: 0 });
   const [loadUser, setLoadUser] = useState(true);
   const [load, setLoad] = useState(false);
+  const [file, setFile] = useState<any>('');
+  const [idPedido, setIdPedido] = useState(null)
+
+  console.log(idPedido)
 
   useEffect(() => {
-    setLoadUser(true)
-    api.get(`usuario/${user.id}`).then((res) => {
-      setDataUser(res.data.result)
-    })
+    setLoadUser(true);
+    api.get(`usuario/${user.id}`).then(res => {
+      setDataUser(res.data.result);
+    });
 
-    setLoadUser(false)
-  }, [user.id])
+    setLoadUser(false);
+  }, [user.id]);
 
   useEffect(() => {
-    api.get('servico').then((response) => {
-      setServices(response.data.result)
-    })
-  }, [])
+    api.get("servico").then(response => {
+      setServices(response.data.result);
+    });
+  }, []);
 
   function handleinputChange(event: any) {
     const { name, value } = event.target;
@@ -82,81 +86,115 @@ export default function NewRequest() {
   }
 
   useEffect(() => {
-    const newServiceSelect: any = services.filter((row) => row.id_servico.toString() === formData.id_servico.toString()).length ? services.filter((row) => row.id_servico.toString() === formData.id_servico.toString())[0] : {
-      valor_unitario: 0
-    }
-    const valueTotal = ((parseInt(formData.qtd_paginas) * parseInt(formData.qtd_copias)) * parseInt(newServiceSelect.valor_unitario))
-    setCurrency(valueTotal)
-    setServiceSelect({...newServiceSelect})
+    const newServiceSelect: any = services.filter(
+      row => row.id_servico.toString() === formData.id_servico.toString(),
+    ).length
+      ? services.filter(
+          row => row.id_servico.toString() === formData.id_servico.toString(),
+        )[0]
+      : {
+          valor_unitario: 0,
+        };
+    const valueTotal =
+      parseInt(formData.qtd_paginas) *
+      parseInt(formData.qtd_copias) *
+      parseInt(newServiceSelect.valor_unitario);
+    setCurrency(valueTotal);
+    setServiceSelect({ ...newServiceSelect });
+  }, [formData]);
 
-  }, [formData])
+  const handleSubmit = useCallback(
+    async (data: object) => {
+      try {
+        formRef.current?.setErrors({});
+        setLoad(true);
 
-  const handleSubmit = useCallback(async (data: object) => {
-    try {
-      formRef.current?.setErrors({});
-      setLoad(true)
+        const schema = Yup.object().shape({
+          id_grafica: Yup.string().required("Campo obrigatorio"),
+          id_servico: Yup.string().required("Campo obrigatorio"),
+          nome: Yup.string().required("Campo obrigatorio"),
+          qtd_paginas: Yup.string().required("Campo obrigatorio"),
+          qtd_copias: Yup.string().required("Campo obrigatorio"),
+          unidade: Yup.string().required("Campo obrigatorio"),
+          setor: Yup.string().required("Campo obrigatorio"),
+          valor: Yup.string().required("Campo obrigatorio"),
+          observacao: Yup.string().required("Campo obrigatorio"),
+        });
 
-      const schema = Yup.object().shape({
-        id_grafica: Yup.string().required("Campo obrigatorio"),
-        id_servico: Yup.string().required("Campo obrigatorio"),
-        nome: Yup.string().required("Campo obrigatorio"),
-        qtd_paginas: Yup.string().required("Campo obrigatorio"),
-        qtd_copias: Yup.string().required("Campo obrigatorio"),
-        unidade: Yup.string().required("Campo obrigatorio"),
-        setor: Yup.string().required("Campo obrigatorio"),
-        valor: Yup.string().required("Campo obrigatorio"),
-        observacao: Yup.string().required("Campo obrigatorio"),
-      });
+        await schema.validate(data, {
+          abortEarly: false,
+        });
 
-      await schema.validate(data, {
-        abortEarly: false,
-      });
+        const {
+          id_grafica,
+          id_servico,
+          nome,
+          qtd_paginas,
+          qtd_copias,
+          unidade,
+          setor,
+          valor,
+          observacao,
+        }: any = data;
 
-      const { 
-        id_grafica,
-        id_servico,
-        nome,
-        qtd_paginas,
-        qtd_copias,
-        unidade,
-        setor,
-        valor,
-        observacao 
-      }: any = data;
+        const newData = {
+          id_grafica,
+          id_servico,
+          nome,
+          qtd_paginas,
+          qtd_copias,
+          unidade,
+          setor,
+          valor,
+          observacao,
+        };
 
-      const newData = {
-        id_grafica,
-        id_servico,
-        nome,
-        qtd_paginas,
-        qtd_copias,
-        unidade,
-        setor,
-        valor,
-        observacao
-      };
+        const response = await api.post("/pedido", newData);
 
-      await api.post("/pedido", newData);
+        setIdPedido(response.data.result)
 
-      setLoad(false)
-      toast.success('Pedido cadastrado com sucesso!')
+        setLoad(false);
+        toast.success("Pedido cadastrado com sucesso!");
 
-      setTimeout(() => {
-        history.push('/home')
-      }, 3000)
+      } catch (err: any) {
+        setLoad(false);
 
-    } catch(err: any) {
-      setLoad(false)
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationErrors(err);
 
-      if (err instanceof Yup.ValidationError) {
-        const errors = getValidationErrors(err);
-
-        formRef.current?.setErrors(errors);
-        return;
+          formRef.current?.setErrors(errors);
+          return;
+        }
+        toast.error(err.response.data.message);
       }
-      toast.error(err.response.data.message)
+    },
+    [history],
+  );
+
+  const handleChangeFile = useCallback(async(e: any) => {
+    if (e.target.files) {
+      const data = new FormData();
+      data.append("projeto", e.target.files[0], e.target.files[0].name);
+      data.append('id_pedido', `${idPedido}`);
+
+      const res = await api.post('pedido-upload', data);
+      setFile(res.data.result)
+      console.log(res.data)
     }
-  }, [history])
+  }, []);
+
+  // async function changeFile(e:any){
+  //   console.log(e)
+  //   if (e.target.files.length) {
+  //     const data = new FormData();
+  //     data.append("projeto", e.target.files[0], e.target.files[0].name);
+  //     //data.append('id_pedido',"1");
+      
+  //     let retorno = await api.post('pedido-upload', data);
+
+  //     console.log(retorno.data.result)
+  //   }
+  // }
 
   return (
     <Container>
@@ -167,13 +205,12 @@ export default function NewRequest() {
             <h2>Dados do pedido</h2>
 
             <div className="field">
-
               <Input
                 type="text"
                 name="id_grafica"
                 disabled
                 label="Nome do Usuario"
-                placeholder='Digite aqui'
+                placeholder="Digite aqui"
                 value={2}
               />
 
@@ -182,7 +219,7 @@ export default function NewRequest() {
                 name="unidade"
                 disabled
                 label="Nome da Unidade"
-                placeholder='Digite aqui'
+                placeholder="Digite aqui"
                 defaultValue={dataUser?.unidade}
               />
 
@@ -191,50 +228,57 @@ export default function NewRequest() {
                 name="setor"
                 disabled
                 label="Setor"
-                placeholder='Digite aqui'
+                placeholder="Digite aqui"
                 defaultValue={dataUser?.setor}
               />
 
               <Input
                 type="text"
                 name="nome"
+                disabled={idPedido ? true : false}
                 label="Nome do pedido"
-                placeholder='Digite aqui'
+                placeholder="Digite aqui"
               />
 
               <Input
                 type="text"
                 name="qtd_paginas"
+                disabled={idPedido ? true : false}
                 label="Quantidade de paginas"
-                placeholder='Digite aqui'
+                placeholder="Digite aqui"
                 onChange={handleinputChange}
               />
 
               <Input
                 type="text"
                 name="qtd_copias"
+                disabled={idPedido ? true : false}
                 label="Qunatidade de copias"
-                placeholder='Digite aqui'
+                placeholder="Digite aqui"
                 onChange={handleinputChange}
               />
 
               <Select
-                label='Servicço'
-                name='id_servico'
+                label="Servicço"
+                name="id_servico"
+                disabled={idPedido ? true : false}
                 placeholder="Selecione uma opção"
                 onChange={handleinputChange}
               >
-                <option value='default'>Selecione uma opção</option>
-                {services.map((row) => (
-                  <option key={row.id_servico} value={row.id_servico}>{row.descricao}</option>
+                <option value="default">Selecione uma opção</option>
+                {services.map(row => (
+                  <option key={row.id_servico} value={row.id_servico}>
+                    {row.descricao}
+                  </option>
                 ))}
               </Select>
 
               <Input
                 type="text"
                 name="valorUnit"
+                disabled={idPedido ? true : false}
                 label="Valor Unitario"
-                placeholder='R$:'
+                placeholder="R$:"
                 value={serviceSelect.valor_unitario}
                 onChange={handleinputChange}
               />
@@ -244,23 +288,21 @@ export default function NewRequest() {
                 name="valor"
                 disabled
                 label="Valor Total"
-                placeholder='R$:'
-                value={currency ? currency : ''}
+                placeholder="R$:"
+                value={currency ? currency : ""}
               />
 
-              <TextArea 
-                defaultValue=''
+              <TextArea
+                defaultValue=""
                 name="observacao"
+                disabled={idPedido ? true : false}
                 label="Observação"
-                placeholder='Digite aqui'
+                placeholder="Digite aqui"
               />
             </div>
 
-            <ButtonSubmit 
-              type="submit"
-              loading={load}
-            >
-                Continuar
+            <ButtonSubmit type="submit" loading={load}>
+              Continuar
             </ButtonSubmit>
           </Form>
         </PanelLeft>
@@ -268,24 +310,23 @@ export default function NewRequest() {
         <PanelRight>
           <h2>Download do Arquivo</h2>
 
-          <InputFile 
+          <InputFile
             name="totalValue"
             label="Clique no arquivo para realizar o Download"
+            type="file"
+            disabled={!idPedido ? true : false}
+            id="caminho"
+            onChange={handleChangeFile}
           />
-          
-        </PanelRight>
 
+        </PanelRight>
       </Content>
 
       <BackToHome>
-        <button 
-          className='backHome'
-          onClick={() => history.goBack()}  
-        >
+        <button className="backHome" onClick={() => history.goBack()}>
           <IconArrowLeft />
           Voltar
         </button>
-        
       </BackToHome>
     </Container>
   );

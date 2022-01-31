@@ -55,6 +55,13 @@ export const Container = styled.div<Props>`
     &::placeholder {
       color: #fff;
     }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.4;
+      color: #474747;
+      font-weight: 600;
+    }
   }
   svg {
     margin-right: 10px;

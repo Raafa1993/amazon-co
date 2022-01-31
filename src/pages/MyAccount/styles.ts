@@ -4,10 +4,27 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  /* height: 100%; */
+  height: 100%;
+`;
 
-  /* background: #F2F5FC; */
-  /* padding: 40px; */
+export const Content = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+
+  background: #f2f5fc;
+  padding: 40px;
+
+  @media (max-width: 680px) {
+    grid-template-columns: 1fr;
+
+    width: 100%;
+  }
+`;
+
+export const PanelLeft = styled.div`
+  display: flex;
+  flex-direction: column;
 
   h1 {
     font-size: 1.875rem;
@@ -18,7 +35,6 @@ export const Container = styled.div`
   form {
     display: flex;
     flex-direction: column;
-    width: 40%;
     margin-top: 40px;
 
     @media (max-width: 680px) {
@@ -44,11 +60,26 @@ export const Container = styled.div`
   }
 `;
 
-export const Content = styled.div`
-  width: 100%;
-  height: 100%;
-  background: #f2f5fc;
-  padding: 40px;
+export const PanelRight = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  border-left: 1px solid rgba(149, 149, 149, 0.4);
+  padding-left: 60px;
+  margin-top: 98px;
+
+  h1 {
+    font-size: 1.875rem;
+    font-weight: bold;
+    color: var(--darkBlack);
+  }
+
+  @media (max-width: 680px) {
+    border-left: 0;
+    padding-left: 0;
+    margin-top: 0;
+  }
 `;
 
 export const ChangePassword = styled.div`

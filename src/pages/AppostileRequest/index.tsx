@@ -165,11 +165,11 @@ export default function AppostileRequest({props}: any) {
         <PanelRight>
           <h2>Download do Arquivo</h2>
 
-          <InputFile 
+          {/* <InputFile 
             value={''}
             name="totalValue"
             label="Clique no arquivo para realizar o Download"
-          />
+          /> */}
         </PanelRight>
       </Content>
 

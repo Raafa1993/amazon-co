@@ -186,13 +186,13 @@ export default function MyAppostileRequest(props: any) {
         <PanelRight>
           <h2>Download do Arquivo</h2>
 
-          <InputFile 
+          {/* <InputFile 
             value={''}
             name="totalValue"
             label="Clique no arquivo para realizar o Download"
             // placeholder='Digite aqui'
             // onChange={handleInputChange}
-          />
+          /> */}
         </PanelRight>
 
       </Content>

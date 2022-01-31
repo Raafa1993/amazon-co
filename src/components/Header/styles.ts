@@ -134,10 +134,12 @@ export const MenuProfile = styled.div<sidebarProps>`
   width: 100%;
   padding: 12px;
 
+  border-radius: 4px;
   background: #fff;
   box-shadow: 0px 10px 6px #00000029;
 
   position: absolute;
+  z-index: 10;
   transform: translateY(0px);
   opacity: 0;
   visibility: hidden;
@@ -154,7 +156,9 @@ export const MenuProfile = styled.div<sidebarProps>`
     display: flex;
     align-items: center;
 
-    padding: 4px;
+    /* padding: 4px; */
+
+    height: 40px;
     border: none;
     background: transparent;
 
@@ -163,7 +167,9 @@ export const MenuProfile = styled.div<sidebarProps>`
     color: var(--darkBlack);
 
     svg {
-      margin-right: 58px;
+      margin-left: 20px;
+      margin-right: 40px;
+      margin-top: 3px;
       path {
         stroke: var(--darkBlack);
       }

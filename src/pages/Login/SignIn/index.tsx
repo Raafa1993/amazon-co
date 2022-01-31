@@ -1,20 +1,20 @@
 import React, { useCallback, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
-import Input from "../../components/form/Input";
-import ButtonSubmit from "../../components/form/ButtonSubmit";
-import Radio from "../../components/form/Radio";
-import { useAuth } from "../../hooks/Auth";
+import Input from "../../../components/form/Input";
+import ButtonSubmit from "../../../components/form/ButtonSubmit";
+import Radio from "../../../components/form/Radio";
+import { useAuth } from "../../../hooks/Auth";
 import * as Yup from "yup";
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
-import getValidationErrors from "../../Utils/getValidationErrors";
+import getValidationErrors from "../../../Utils/getValidationErrors";
 import { toast } from 'react-toastify'
 
-import IconEye from "../../assets/icons/IconEyeClose";
-import LogoAmazon from "../../assets/icons/LogoAmazon";
+import IconEye from "../../../assets/icons/IconEyeClose";
+import LogoAmazon from "../../../assets/icons/LogoAmazon";
 
-import BgLogin from "../../assets/images/Bglogin.png";
-import ArteLogin from "../../assets/images/ArteLogin.png";
+import BgLogin from "../../../assets/images/Bglogin.png";
+import ArteLogin from "../../../assets/images/ArteLogin.png";
 
 import {
   Container,

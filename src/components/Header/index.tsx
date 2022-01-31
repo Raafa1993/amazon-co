@@ -17,6 +17,7 @@ import {
     Info,
     MenuProfile,
 } from "./styles";
+import IconSignUp from "../../assets/icons/IconSignUp";
 
 interface IMenu {
     to: string;
@@ -35,7 +36,7 @@ export default function Header({ menus, path }: ISiderbar) {
   const [hasVisible, setHasVisible] = useState(false);
 
   function handleOnSignOut() {
-    history.push('/')
+    // history.push('/')
     signOut()
   }
 
@@ -66,7 +67,7 @@ export default function Header({ menus, path }: ISiderbar) {
                 <img src="https://avatars.githubusercontent.com/u/37309024?v=4" alt="profile" />
             </Image>
             <Info hasVisible={hasVisible}>
-                <h2>{(user.nome)}</h2>
+                <h2>{(user?.nome)}</h2>
                 <IconArrowLeft />
             </Info>
 
@@ -77,7 +78,7 @@ export default function Header({ menus, path }: ISiderbar) {
               className="buttonSignUp"
               onClick={handleOnSignOut}
             >
-              <IconArrowLeft />
+              <IconSignUp />
               Sair
             </button>
           </MenuProfile>
