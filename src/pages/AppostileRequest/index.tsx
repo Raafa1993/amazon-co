@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import api from '../../services/api';
-import InputFile from '../../components/form/InputFile';
 import Input from '../../components/form/Input';
 import TextArea from '../../components/form/TextArea';
 import { Form } from '@unform/web';
@@ -18,6 +17,7 @@ import {
   PanelRight,
   BackToHome,
 } from './styles';
+import LinkDownload from '../../components/form/LinkDownload';
 
 interface OrderProps {
   id_usuario?: string;
@@ -44,6 +44,7 @@ export default function AppostileRequest({props}: any) {
   const { id } = useParams<ParamsProps>()
   const history = useHistory();
   const [load, setLoad] = useState(true);
+  const [file, setFile] = useState('');
   
   const [data, setData] = useState<OrderProps>({
     id_usuario: '',
@@ -65,9 +66,12 @@ export default function AppostileRequest({props}: any) {
     api.get(`pedido-${user.profile}/${id}`).then(res => {
       setData(res.data.result[0])
     })
+    api.get(`pedido-arquivo-listar/${id}`).then((res) => {
+      setFile(res.data.result.caminho)
+    })
     setLoad(false)
   }, [user, id])
-  
+
   return (
     <Container>
       <Content>
@@ -165,11 +169,14 @@ export default function AppostileRequest({props}: any) {
         <PanelRight>
           <h2>Download do Arquivo</h2>
 
-          {/* <InputFile 
-            value={''}
-            name="totalValue"
-            label="Clique no arquivo para realizar o Download"
-          /> */}
+          <LinkDownload
+            href={file}
+            target="_blank"
+            label='Clique aqui para realizar o Download'
+          >
+            Download
+          </LinkDownload>
+
         </PanelRight>
       </Content>
 
@@ -181,10 +188,6 @@ export default function AppostileRequest({props}: any) {
           <IconArrowLeft />
           Voltar
         </button>
-        <ButtonDefault 
-          status='concluido'
-          text='Salvar'
-        />
       </BackToHome>
     </Container>
   );

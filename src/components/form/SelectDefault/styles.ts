@@ -2,6 +2,7 @@ import styled, { css } from "styled-components";
 
 interface Props {
   ronded?: boolean;
+  width?: boolean;
 }
 
 export const Container = styled.div<Props>`
@@ -19,6 +20,10 @@ export const Container = styled.div<Props>`
 
   ${props => props.ronded && css`
     border-radius: 0;
+  `}
+
+  ${props => props.width && css`
+    width: 100%;
   `}
 
   select {

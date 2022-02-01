@@ -8,7 +8,7 @@ interface InputProps extends React.HTMLAttributes<HTMLInputElement> {
   value: any;
   onChangeText: (value: string) => void;
   search?: boolean;
-  style?: any;
+  width?: boolean;
   ronded?: boolean;
 }
 
@@ -16,6 +16,7 @@ export default function SelectDefault({
   placeholder,
   value,
   ronded,
+  width,
   onChangeText,
   children,
 }: InputProps) {
@@ -31,7 +32,7 @@ export default function SelectDefault({
   }
 
   return (
-    <Container ronded={ronded} className="form-children-default select">
+    <Container width={width} ronded={ronded} className="form-children-default select">
       <select 
         value={valueInput}
         onChange={handleOnChange}

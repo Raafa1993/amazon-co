@@ -69,7 +69,7 @@ export const PanelRight = styled.div`
     font-size: 1.25rem;
     font-weight: 600;
     color: var(--darkBlack);
-    margin-bottom: 40px;
+    margin-bottom: 20px;
   }
 
   @media (max-width: 680px) {

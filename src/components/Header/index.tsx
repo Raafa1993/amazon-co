@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useAuth } from '../../hooks/Auth';
 
 import IconAlert from "../../assets/icons/IconAlert";
@@ -18,6 +18,7 @@ import {
     MenuProfile,
 } from "./styles";
 import IconSignUp from "../../assets/icons/IconSignUp";
+import IconUser from "../../assets/icons/IconUser";
 
 interface IMenu {
     to: string;
@@ -32,11 +33,9 @@ interface IMenu {
 
 export default function Header({ menus, path }: ISiderbar) {
   const { signOut, user } = useAuth();
-  const history = useHistory()
   const [hasVisible, setHasVisible] = useState(false);
 
   function handleOnSignOut() {
-    // history.push('/')
     signOut()
   }
 
@@ -55,7 +54,7 @@ export default function Header({ menus, path }: ISiderbar) {
       <ContentRight>
           <ButtonNotification
             icon={<IconAlert />}
-            mentions={2}
+            // mentions={2}
           />
 
           <Separator />
@@ -64,7 +63,7 @@ export default function Header({ menus, path }: ISiderbar) {
             onClick={() => setHasVisible(!hasVisible)}
           >
             <Image>
-                <img src="https://avatars.githubusercontent.com/u/37309024?v=4" alt="profile" />
+                <IconUser />
             </Image>
             <Info hasVisible={hasVisible}>
                 <h2>{(user?.nome)}</h2>

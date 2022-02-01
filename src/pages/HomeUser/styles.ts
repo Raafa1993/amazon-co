@@ -8,50 +8,62 @@ export const Container = styled.div`
   background: #F2F5FC;
   padding: 40px;
 
+  overflow-y: scroll;
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
 `;
 
 export const SectionFilter = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
   display: grid;
-  grid-template-columns: 15% 37% 25% 5% 15%;
-  align-items: center;
-  transition: all 0.2s;
+  grid-template-columns: 15% 20% 20% 22% 20%;
+  gap: 10px;
 
-  .titleMyRequest {
-    font-size: 30px;
-    font-weight: bold;
-    color: var(--darkBlack);
-  }
-
-  @media (max-width: 1000px) {
+  @media(max-width: 1320px) {
     grid-template-columns: 1fr 1fr;
     grid-template-areas:
-      "tt bt bt"
-      "ft ft sr";
-    gap: 22px;
+      "tt bt"
+      "sc sc"
+      "ft ft2";
+    gap: 20px;
+  }  
+  .titleMyRequest {
+    font-size: 1.87rem;
+    white-space: nowrap;
+    font-weight: bold;
+    color: var(--darkBlack);
 
-    .titleMyRequest {
+    @media(max-width: 1320px) {
       grid-area: tt;
-    }
-
-    >button {
-      grid-area: bt;
     }
   }
 `;
 
-export const Filter = styled.div`
+export const Field = styled.div`
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  gap: 22px;
 
-  @media (max-width: 1000px) {
-    grid-area: ft;
-  }
+    &.SearchDefault {
+      @media(max-width: 1320px) {
+        grid-area: sc;
+      }
+    }
+
+    &.buttonDefault {
+      @media(max-width: 1320px) {
+        grid-area: bt;
+      }
+    }
+
+    &.selectDefault {
+      width: 100%;
+     
+      @media(max-width: 1320px) {
+        grid-area: ft;
+      }
+    }
+
 `;
 
 export const Separator = styled.div`
@@ -59,18 +71,6 @@ export const Separator = styled.div`
   height: 34px;
   background: var(--gray);
   margin: 0 auto;
-  @media (max-width: 1000px) {
-    display: none;
-  }
-`;
-
-export const ContentSearch = styled.div`
-  display: flex;
-  align-items: center;
-
-  @media (max-width: 1000px) {
-    grid-area: sr;
-  }
 `;
 
 export const SectionTable = styled.div`

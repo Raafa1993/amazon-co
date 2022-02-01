@@ -1,21 +1,22 @@
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import IconBallonMessage from "../../assets/icons/IconBallonMessage";
-import IconCancel from "../../assets/icons/IconCancel";
-import ButtonDefault from "../../components/form/ButtonDefault";
-import ButtonNotification from "../../components/form/ButtonNotification";
-import InputDefault from "../../components/form/InputDefault";
+import api from "../../services/api";
+import Skeleton from "react-loading-skeleton";
+
 import Modal from "../../components/form/Modal";
 import ModalCancel from "../../components/form/ModalCancel";
 import SelectDefault from "../../components/form/SelectDefault";
-import api from "../../services/api";
+import ButtonDefault from "../../components/form/ButtonDefault";
+import ButtonNotification from "../../components/form/ButtonNotification";
+import InputDefault from "../../components/form/InputDefault";
+
+import IconBallonMessage from "../../assets/icons/IconBallonMessage";
+import IconCancel from "../../assets/icons/IconCancel";
 
 import {
   Container,
   SectionFilter,
-  Filter,
-  Separator,
-  ContentSearch,
+  Field,
   Main,
   SectionTable,
   SectionPagination,
@@ -48,218 +49,255 @@ interface ModalProps {
   };
 }
 
-const limit = 9;
+const limit = 10;
 
 export default function Home() {
   const history = useHistory();
   const [modal, setModal] = useState(false);
   const [load, setLoad] = useState(true);
   const [data, setData] = useState<OrderProps[]>([]);
-  const [idModal, setIdModal] = useState(Number)
-  const [dataModal, setDataModal] = useState<ModalProps>()
-  const [modalCancel, setModalCancel] = useState(false)
-  const [dataModalCancel, setDataModalCancel] = useState<ModalProps>()
-  const [status, setStatus] = useState("pendente");
+  const [idModal, setIdModal] = useState(Number);
+  const [dataModal, setDataModal] = useState<ModalProps>();
+  const [modalCancel, setModalCancel] = useState(false);
+  const [dataModalCancel, setDataModalCancel] = useState<ModalProps>();
+
+  const [filterStatus, setFilterStatus] = useState("todos");
+  const [filterOrder, setFilterOrder] = useState("criado");
+  const [filterQuantity, setFilterQuantity] = useState("0-99999");
 
   const [total, setTotal] = useState(0);
-  const [pages, setPages] = useState([0, 1, 2, 3, 4]);
-  const [currentPage, setCurrentPage] = useState(0);
+  const [pages, setPages] = useState([]);
+  const [currentPage, setCurrentPage] = useState<any>(1);
 
   useEffect(() => {
     setLoad(true);
     api
-      .get(`pedido-grafica?status=${status}&ordem=criado&pagina=1`)
+      .get(
+        `pedido-grafica?${filterStatus}=pendente&ordem=${filterOrder}&pagina=1&quantidade=${filterQuantity}&perPage=${limit}`,
+      )
       .then(res => {
         setData(res.data.result.data);
+
+        setTotal(res.data.result.pagination.total);
+        const totalPages = Math.ceil(total / limit);
+
+        const arrayPages = [];
+        for (let i = 0; i < totalPages; i++) {
+          arrayPages.push(i);
+        }
+
+        setPages(arrayPages as any);
+        setLoad(false);
       });
-      setLoad(false);
-  }, [status]);
+  }, [filterOrder, filterStatus, filterQuantity, total, currentPage]);
 
   function handleOnOffSide(id: any) {
-    setIdModal(id)
-    setModal(!modal)
+    setIdModal(id);
+    setModal(!modal);
 
     setDataModal({
-      title:"Deseja enviar um empedimento?",
-      subtitle:"Caso o arquivo esteja com algum defeito ou dúvidas, mande uma mensagem avisando a Escola",
-      textArea:true,
-      buttonSend:"Enviar",
-      buttonCancel:"Cancelar",
-      message:{
-        titleMessage:"Impedimento registrado com sucesso",
-        subtitleMessage:"Uma boa descrição",
-      }
-    })
+      title: "Deseja enviar um empedimento?",
+      subtitle:
+        "Caso o arquivo esteja com algum defeito ou dúvidas, mande uma mensagem avisando a Escola",
+      textArea: true,
+      buttonSend: "Enviar",
+      buttonCancel: "Cancelar",
+      message: {
+        titleMessage: "Impedimento registrado com sucesso",
+        subtitleMessage: "Uma boa descrição",
+      },
+    });
   }
 
   function handleOnCancel(id: any) {
-    setIdModal(id)
-    setModalCancel(!modalCancel)
+    setIdModal(id);
+    setModalCancel(!modalCancel);
 
     setDataModalCancel({
-      title:"Tem certeza que deseja Cancelar esse pedido?",
-      subtitle:"Para cancelar é necessario colocar um impedimento avisando o motivo do cancelamento.",
-      textArea:true,
-      buttonSend:"Excluir",
-      buttonCancel:"Voltar",
-      message:{
-        titleMessage:"Impedimento registrado com sucesso",
-        subtitleMessage:"Uma boa descrição",
-      }
-    })
+      title: "Tem certeza que deseja Cancelar esse pedido?",
+      subtitle:
+        "Para cancelar é necessario colocar um impedimento avisando o motivo do cancelamento.",
+      textArea: true,
+      buttonSend: "Excluir",
+      buttonCancel: "Voltar",
+      message: {
+        titleMessage: "Impedimento registrado com sucesso",
+        subtitleMessage: "Uma boa descrição",
+      },
+    });
   }
 
   return (
     <Container>
       <SectionFilter>
         <h1 className="TitleHome">Pedidos</h1>
-        <Filter>
+        <Field className="SelectDefault">
           <SelectDefault
-            value=""
-            placeholder="Conteúdo"
-            onChangeText={value => console.log(value)}
+            width
+            value="todos"
+            placeholder="Selecione Status"
+            onChangeText={value => setFilterStatus(value)}
           >
-            <option value="Placeholder maneiro">Conteúdo</option>
-            <option value="Pendente">Pendente</option>
-            <option value="Impedimento">Impedimento</option>
-            <option value="Todos">Todos</option>
-          </SelectDefault>
-
-          <SelectDefault
-            value=""
-            placeholder="Mais recente"
-            onChangeText={value => console.log(value)}
-          >
-            <option value="mais recente">Conteúdo</option>
+            <option value="concluido">Concluido</option>
             <option value="pendente">Pendente</option>
             <option value="impedimento">Impedimento</option>
+            <option value="cancelado">Cancelado</option>
             <option value="todos">Todos</option>
           </SelectDefault>
+        </Field>
+
+        <Field className="SelectDefault">
           <SelectDefault
-            value={status}
+            width
+            value="criado"
+            placeholder="Selecione Filtro"
+            onChangeText={value => setFilterOrder(value)}
+          >
+            <option value="criado">Mais recente</option>
+            <option value="criado">Criado</option>
+            <option value="nome">Nome</option>
+            <option value="usuario">Usuario</option>
+          </SelectDefault>
+        </Field>
+
+        <Field className="SelectFr">
+          <SelectDefault
+            width
+            value="0-99999"
             placeholder="Filtrar por Quantidade"
-            onChangeText={value => setStatus(value)}
+            onChangeText={value => setFilterQuantity(value)}
           >
-            <option value="pendente">Pendente</option>
-            <option value="impedimento">Impedimento</option>
-            <option value="todos">Todos</option>
+            <option value="0-50">0 a 50</option>
+            <option value="50-100">50 a 100</option>
+            <option value="100-150">100 a 150</option>
+            <option value="0-99999">Todos</option>
           </SelectDefault>
-        </Filter>
+        </Field>
 
-        <Separator />
-
-        <ContentSearch>
+        <Field className="SearchDefault">
           <InputDefault
             onChangeText={value => console.log(value)}
             value={""}
             search={true}
             placeholder={"Busca com icone"}
           />
-        </ContentSearch>
+        </Field>
       </SectionFilter>
 
       <Main>
         <SectionTable>
-          <table>
-            <thead>
-              <tr>
-                <th>Visualizar</th>
-                <th>Usuario</th>
-                <th>Unidade</th>
-                <th>Setor</th>
-                <th>Pedido</th>
-                <th>Qtd. Pagínas</th>
-                <th>Qtd. Cópias</th>
-                <th>Valor Total</th>
-                <th>Data do pedido</th>
-                <th>Status</th>
-                <th>Impedimento</th>
-                <th>Cancelar</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((row) => (
-                <tr key={row.id_pedido}>
-                  <td>
-                    <ButtonDefault
-                      status="visualizar"
-                      border={true}
-                      text="Visualizar"
-                      onClick={() => history.push(`/pedido/${row.id_pedido}`)}
-                    />
-                  </td>
-                  <td>{row.id_grafica}</td>
-                  <td>{row.unidade}</td>
-                  <td>{row.setor}</td>
-                  <td>{row.id_pedido}</td>
-                  <td>{row.qtd_paginas}</td>
-                  <td>{row.qtd_copias}</td>
-                  <td>
-                    {new Intl.NumberFormat("pt-BR", {
-                      style: "currency",
-                      currency: "BRL",
-                    }).format(row.valor)}
-                  </td>
-                  <td>
-                    {new Intl.DateTimeFormat("pt-BR").format(
-                      new Date(row.criado),
-                    )}
-                  </td>
-                  <td>
-                    <ButtonDefault
-                      status={row.status}
-                      border={true}
-                      text={row.status}
-                    />
-                  </td>
-                  <td className="buttonIcons">
-                    <ButtonNotification
-                      icon={<IconBallonMessage />}
-                      onClick={() => handleOnOffSide(row.id_pedido)}
-                    />
-                  </td>
-                  <td>
-                    <ButtonNotification
-                      icon={<IconCancel />}
-                      onClick={() => handleOnCancel(row.id_pedido)}
-                    />
-                  </td>
+          {load ? (
+            <>
+              <Skeleton height={"40px"} />
+              <Skeleton count={4} height={80} />
+            </>
+          ) : (
+            <table>
+              <thead>
+                <tr>
+                  <th>Visualizar</th>
+                  <th>Usuario</th>
+                  <th>Unidade</th>
+                  <th>Setor</th>
+                  <th>Pedido</th>
+                  <th>Qtd. Pagínas</th>
+                  <th>Qtd. Cópias</th>
+                  <th>Valor Total</th>
+                  <th>Data do pedido</th>
+                  <th>Status</th>
+                  <th>Impedimento</th>
+                  <th>Cancelar</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {data.map(row => (
+                  <tr key={row.id_pedido}>
+                    <td>
+                      <ButtonDefault
+                        status="visualizar"
+                        border={true}
+                        text="Visualizar"
+                        onClick={() => history.push(`/pedido/${row.id_pedido}`)}
+                      />
+                    </td>
+                    <td>{row.id_grafica}</td>
+                    <td>{row.unidade}</td>
+                    <td>{row.setor}</td>
+                    <td>{row.id_pedido}</td>
+                    <td>{row.qtd_paginas}</td>
+                    <td>{row.qtd_copias}</td>
+                    <td>
+                      {new Intl.NumberFormat("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      }).format(row.valor)}
+                    </td>
+                    <td>
+                      {new Intl.DateTimeFormat("pt-BR").format(
+                        new Date(row.criado),
+                      )}
+                    </td>
+                    <td>
+                      <ButtonDefault
+                        status={row.status}
+                        border={true}
+                        text={row.status}
+                      />
+                    </td>
+                    <td className="buttonIcons">
+                      <ButtonNotification
+                        icon={<IconBallonMessage />}
+                        onClick={() => handleOnOffSide(row.id_pedido)}
+                      />
+                    </td>
+                    <td>
+                      <ButtonNotification
+                        icon={<IconCancel />}
+                        disabled={row.status === 'cancelado' ? true : false}
+                        onClick={() => handleOnCancel(row.id_pedido)}
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </SectionTable>
 
-        <SectionPagination>
-          <PaginationButton>
-            <ButtonPagination
-              type="button"
-              onClick={() => setCurrentPage(currentPage - 1)}
-              disabled={currentPage < 1}
-              isActive={currentPage < 1}
-            >
-              Voltar
-            </ButtonPagination>
-            {pages.map(page => (
-              <PaginationItem
-                isSelect={page === currentPage}
-                key={page}
-                onClick={() => setCurrentPage(page)}
-                disabled={page === currentPage}
+        {load ? (
+          <Skeleton height={40} style={{ marginTop: "20px" }} />
+        ) : (
+          <SectionPagination>
+            <PaginationButton>
+              <ButtonPagination
+                type="button"
+                onClick={() => setCurrentPage(currentPage - 1)}
+                disabled={currentPage < 2}
+                isActive={currentPage < 2}
               >
-                {page + 1}
-              </PaginationItem>
-            ))}
-            <ButtonPagination
-              type="button"
-              onClick={() => setCurrentPage(currentPage + 1)}
-              disabled={currentPage === pages.length - 1}
-              isActive={currentPage === pages.length - 1}
-            >
-              Avançar
-            </ButtonPagination>
-          </PaginationButton>
-        </SectionPagination>
+                Voltar
+              </ButtonPagination>
+              {pages.map(page => (
+                <PaginationItem
+                  isSelect={page + 1 === currentPage}
+                  key={page}
+                  onClick={() => setCurrentPage(parseInt(page) + 1)}
+                  disabled={page + 1 === currentPage}
+                >
+                  {page + 1}
+                </PaginationItem>
+              ))}
+              <ButtonPagination
+                type="button"
+                onClick={() => setCurrentPage(currentPage + 1)}
+                disabled={currentPage === pages.length}
+                isActive={currentPage === pages.length}
+              >
+                Avançar
+              </ButtonPagination>
+            </PaginationButton>
+          </SectionPagination>
+        )}
       </Main>
 
       <Modal
@@ -270,7 +308,7 @@ export default function Home() {
         dataModal={dataModal as any}
       />
 
-      <ModalCancel 
+      <ModalCancel
         id="overlayModal"
         onClose={() => setModalCancel(!modalCancel)}
         openModal={modalCancel}

@@ -8,6 +8,8 @@ import ButtonNotification from "../../components/form/ButtonNotification";
 import InputDefault from "../../components/form/InputDefault";
 import SelectDefault from "../../components/form/SelectDefault";
 import api from "../../services/api";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 import IconEyer from "../../assets/icons/IconEyer";
 import ModalUser from "../../components/form/ModalUser";
@@ -21,8 +23,7 @@ import {
 import {
   Container,
   SectionFilter,
-  Filter,
-  Separator,
+  Field,
   SectionTable,
   SectionPagination,
 } from "./styles";
@@ -47,7 +48,7 @@ interface ModalProps {
   buttonCancel?: string;
 }
 
-const limit = 9;
+const limit = 10;
 
 export default function HomeUser() {
   const history = useHistory();
@@ -60,20 +61,31 @@ export default function HomeUser() {
   const [filterStatus, setFilterStatus] = useState("todos");
   const [filterOrder, setFilterOrder] = useState("criado");
 
-
   const [total, setTotal] = useState(0);
-  const [pages, setPages] = useState([0, 1, 2, 3, 4]);
-  const [currentPage, setCurrentPage] = useState(0);
+  const [pages, setPages] = useState([]);
+  const [currentPage, setCurrentPage] = useState<any>(1);
 
   useEffect(() => {
     setLoad(true);
     api
-      .get(`pedido-usuario?status=${filterStatus}&ordem=${filterOrder}&pagina=1`)
+      .get(
+        `pedido-usuario?status=${filterStatus}&ordem=${filterOrder}&pagina=${currentPage}&perPage=${limit}`,
+      )
       .then(res => {
         setData(res.data.result.data);
+
+        setTotal(res.data.result.pagination.total);
+        const totalPages = Math.ceil(total / limit);
+
+        const arrayPages = [];
+        for (let i = 0; i < totalPages; i++) {
+          arrayPages.push(i);
+        }
+
+        setPages(arrayPages as any);
+        setLoad(false);
       });
-    setLoad(false);
-  }, [filterStatus, filterOrder]);
+  }, [filterStatus, filterOrder, total, currentPage]);
 
   function handleOnOffSide(id: any) {
     setIdModal(id);
@@ -91,8 +103,10 @@ export default function HomeUser() {
     <Container>
       <SectionFilter>
         <h1 className="titleMyRequest">Meus Pedidos</h1>
-        <Filter>
+
+        <Field className="SelectDefault">
           <SelectDefault
+            width
             value="todos"
             placeholder="Selecione Status"
             onChangeText={value => setFilterStatus(value)}
@@ -102,41 +116,53 @@ export default function HomeUser() {
             <option value="impedimento">Impedimento</option>
             <option value="todos">Todos</option>
           </SelectDefault>
+        </Field>
 
+        <Field className="SelectDefault">
           <SelectDefault
+            width
             value=""
             placeholder="Selecione Filtro"
             onChangeText={value => setFilterOrder(value)}
           >
             <option value="criado">Mais recente</option>
+            <option value="criado">Criado</option>
             <option value="nome">Nome</option>
             <option value="usuario">Usuario</option>
           </SelectDefault>
+        </Field>
 
-          <Separator />
-        </Filter>
+        <Field className="SearchDefault">
+          <InputDefault
+            onChangeText={value => console.log(value)}
+            value={""}
+            search={true}
+            placeholder={"Busca com icone"}
+          />
+        </Field>
 
-        <InputDefault
-          onChangeText={value => console.log(value)}
-          value={""}
-          search={true}
-          placeholder={"Busca com icone"}
-        />
-
-        <Separator />
-
-        <ButtonDefault
-          status="concluido"
-          text="Fazer novo Pedido"
-          onClick={() => history.push("/novo-pedido")}
-        />
+        <Field className="buttonDefault">
+          <ButtonDefault
+            status="concluido"
+            text="Fazer novo Pedido"
+            onClick={() => history.push("/novo-pedido")}
+          />
+        </Field>
       </SectionFilter>
 
       <SectionTable>
+        {load ? (
+          <>
+            <Skeleton height={"40px"} />
+            <Skeleton count={4} height={80} />
+          </>
+        ) : (
           <table>
             <thead>
               <tr>
-                <th align="center" style={{width: '10px'}}>Visualizar</th>
+                <th align="center" style={{ width: "10px" }}>
+                  Visualizar
+                </th>
                 <th>Pedido</th>
                 <th>Qtd. de Páginas</th>
                 <th>Qtd. Cópias</th>
@@ -195,38 +221,43 @@ export default function HomeUser() {
               ))}
             </tbody>
           </table>
+        )}
       </SectionTable>
 
-      <SectionPagination>
-        <PaginationButton>
-          <ButtonPagination
-            type="button"
-            onClick={() => setCurrentPage(currentPage - 1)}
-            disabled={currentPage < 1}
-            isActive={currentPage < 1}
-          >
-            Voltar
-          </ButtonPagination>
-          {pages.map(page => (
-            <PaginationItem
-              isSelect={page === currentPage}
-              key={page}
-              onClick={() => setCurrentPage(page)}
-              disabled={page === currentPage}
+      {load ? (
+        <Skeleton height={40} style={{ marginTop: "20px" }} />
+      ) : (
+        <SectionPagination>
+          <PaginationButton>
+            <ButtonPagination
+              type="button"
+              onClick={() => setCurrentPage(currentPage - 1)}
+              disabled={currentPage < 2}
+              isActive={currentPage < 2}
             >
-              {page + 1}
-            </PaginationItem>
-          ))}
-          <ButtonPagination
-            type="button"
-            onClick={() => setCurrentPage(currentPage + 1)}
-            disabled={currentPage === pages.length - 1}
-            isActive={currentPage === pages.length - 1}
-          >
-            Avançar
-          </ButtonPagination>
-        </PaginationButton>
-      </SectionPagination>
+              Voltar
+            </ButtonPagination>
+            {pages.map(page => (
+              <PaginationItem
+                isSelect={page + 1 === currentPage}
+                key={page}
+                onClick={() => setCurrentPage(parseInt(page) + 1)}
+                disabled={page + 1 === currentPage}
+              >
+                {page + 1}
+              </PaginationItem>
+            ))}
+            <ButtonPagination
+              type="button"
+              onClick={() => setCurrentPage(currentPage + 1)}
+              disabled={currentPage === pages.length}
+              isActive={currentPage === pages.length}
+            >
+              Avançar
+            </ButtonPagination>
+          </PaginationButton>
+        </SectionPagination>
+      )}
 
       <ModalUser
         id="overlayModal"

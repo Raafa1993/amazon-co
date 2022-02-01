@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useAuth } from "../../hooks/Auth";
 import IconArrowLeft from "../../assets/icons/IconArrowLeft";
@@ -61,9 +61,6 @@ export default function NewRequest() {
   const [loadUser, setLoadUser] = useState(true);
   const [load, setLoad] = useState(false);
   const [file, setFile] = useState<any>('');
-  const [idPedido, setIdPedido] = useState(null)
-
-  console.log(idPedido)
 
   useEffect(() => {
     setLoadUser(true);
@@ -103,10 +100,22 @@ export default function NewRequest() {
     setServiceSelect({ ...newServiceSelect });
   }, [formData]);
 
-  const handleSubmit = useCallback(
-    async (data: object) => {
+  async function handleChangeFile(e:any){
+    console.log(e)
+    if (e.target.files.length) {
+      const data = new FormData();
+      data.append("projeto", e.target.files[0]);
+      
+      let retorno = await api.post('pedido-upload', data);
+      setFile(retorno.data.result)
+    }
+  }
+
+
+  async function handleSubmit (data: object) {
       try {
         formRef.current?.setErrors({});
+
         setLoad(true);
 
         const schema = Yup.object().shape({
@@ -147,11 +156,10 @@ export default function NewRequest() {
           setor,
           valor,
           observacao,
+          arquivo: file
         };
 
-        const response = await api.post("/pedido", newData);
-
-        setIdPedido(response.data.result)
+        await api.post("/pedido", newData);
 
         setLoad(false);
         toast.success("Pedido cadastrado com sucesso!");
@@ -167,34 +175,7 @@ export default function NewRequest() {
         }
         toast.error(err.response.data.message);
       }
-    },
-    [history],
-  );
-
-  const handleChangeFile = useCallback(async(e: any) => {
-    if (e.target.files) {
-      const data = new FormData();
-      data.append("projeto", e.target.files[0], e.target.files[0].name);
-      data.append('id_pedido', `${idPedido}`);
-
-      const res = await api.post('pedido-upload', data);
-      setFile(res.data.result)
-      console.log(res.data)
     }
-  }, []);
-
-  // async function changeFile(e:any){
-  //   console.log(e)
-  //   if (e.target.files.length) {
-  //     const data = new FormData();
-  //     data.append("projeto", e.target.files[0], e.target.files[0].name);
-  //     //data.append('id_pedido',"1");
-      
-  //     let retorno = await api.post('pedido-upload', data);
-
-  //     console.log(retorno.data.result)
-  //   }
-  // }
 
   return (
     <Container>
@@ -235,7 +216,7 @@ export default function NewRequest() {
               <Input
                 type="text"
                 name="nome"
-                disabled={idPedido ? true : false}
+                // disabled={idPedido ? true : false}
                 label="Nome do pedido"
                 placeholder="Digite aqui"
               />
@@ -243,7 +224,7 @@ export default function NewRequest() {
               <Input
                 type="text"
                 name="qtd_paginas"
-                disabled={idPedido ? true : false}
+                // disabled={idPedido ? true : false}
                 label="Quantidade de paginas"
                 placeholder="Digite aqui"
                 onChange={handleinputChange}
@@ -252,7 +233,7 @@ export default function NewRequest() {
               <Input
                 type="text"
                 name="qtd_copias"
-                disabled={idPedido ? true : false}
+                // disabled={idPedido ? true : false}
                 label="Qunatidade de copias"
                 placeholder="Digite aqui"
                 onChange={handleinputChange}
@@ -261,7 +242,7 @@ export default function NewRequest() {
               <Select
                 label="Servicço"
                 name="id_servico"
-                disabled={idPedido ? true : false}
+                // disabled={idPedido ? true : false}
                 placeholder="Selecione uma opção"
                 onChange={handleinputChange}
               >
@@ -276,7 +257,7 @@ export default function NewRequest() {
               <Input
                 type="text"
                 name="valorUnit"
-                disabled={idPedido ? true : false}
+                // disabled={idPedido ? true : false}
                 label="Valor Unitario"
                 placeholder="R$:"
                 value={serviceSelect.valor_unitario}
@@ -295,7 +276,7 @@ export default function NewRequest() {
               <TextArea
                 defaultValue=""
                 name="observacao"
-                disabled={idPedido ? true : false}
+                // disabled={idPedido ? true : false}
                 label="Observação"
                 placeholder="Digite aqui"
               />
@@ -314,7 +295,7 @@ export default function NewRequest() {
             name="totalValue"
             label="Clique no arquivo para realizar o Download"
             type="file"
-            disabled={!idPedido ? true : false}
+            // disabled={!idPedido ? true : false}
             id="caminho"
             onChange={handleChangeFile}
           />

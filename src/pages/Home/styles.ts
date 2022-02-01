@@ -16,8 +16,9 @@ export const Container = styled.div`
 
 export const SectionFilter = styled.div`
   display: grid;
-  grid-template-columns: 15% 60% 5% 20%;
+  grid-template-columns: 15% 20% 20% 20% 22%;
   align-items: center;
+  gap: 10px;
   transition: all 0.2s;
 
   .TitleHome {
@@ -29,12 +30,36 @@ export const SectionFilter = styled.div`
   @media (max-width: 980px) {
     grid-template-columns: 1fr 1fr;
     grid-template-areas:
-      "tt sr"
+      "tt tt"
+      "sr fr"
       "ft ft";
     gap: 22px;
 
     .TitleHome {
       grid-area: tt;
+    }
+  }
+`;
+
+export const Field = styled.div`
+  display: flex;
+  align-items: center;
+
+  &.SearchDefault {
+    @media (max-width: 980px) {
+      grid-area: sr;
+    }
+  }
+
+  &.selectDefault {
+    @media (max-width: 980px) {
+      grid-area: ft;
+    }
+  }
+
+  &.selectFr {
+    @media (max-width: 980px) {
+      grid-area: fr;
     }
   }
 `;
@@ -77,7 +102,7 @@ export const Main = styled.div`
   justify-content: space-between;
 
   height: 100%;
-`
+`;
 
 export const SectionTable = styled.div`
   display: flex;
@@ -89,7 +114,7 @@ export const SectionTable = styled.div`
   margin-left: -12px;
   margin-right: -12px;
 
-  @media (max-width: 1540px) {
+  @media (max-width: 1350px) {
     overflow-x: scroll;
     overflow-y: hidden;
 
@@ -137,9 +162,8 @@ export const SectionTable = styled.div`
           white-space: nowrap;
           font-size: 16px;
           font-weight: normal;
-
         }
-        
+
         transition: all 0.3s;
       }
       tr {
@@ -172,8 +196,8 @@ export const PaginationItem = styled.button<Props>`
   color: var(--darkGray);
 
   background: transparent;
-  padding: .375rem;
-  border-radius: .2rem;
+  padding: 0.375rem;
+  border-radius: 0.2rem;
 
   border: none;
   transition: filter 0.3s;
@@ -184,14 +208,15 @@ export const PaginationItem = styled.button<Props>`
     color: var(--green);
   }
 
-  ${(props) =>
-    props.isSelect && css`
+  ${props =>
+    props.isSelect &&
+    css`
       background: rgba(10, 191, 158, 0.1);
       color: var(--green);
       border: 0;
     `};
-    
-  ${(props) =>
+
+  ${props =>
     props.isActive && {
       background: "#bfbfcc",
       color: "#E1E3E5",
@@ -204,14 +229,16 @@ export const ButtonPagination = styled.button<Props>`
 
   background: transparent;
   border: none;
-  padding: .8rem;
-  
+  padding: 0.8rem;
+
   font-size: 1rem;
   font-weight: 500;
   color: var(--darkGray);
 
-  ${props => props.isActive && css`
+  ${props =>
+    props.isActive &&
+    css`
       cursor: not-allowed;
       opacity: 0.4;
-  `}
+    `}
 `;

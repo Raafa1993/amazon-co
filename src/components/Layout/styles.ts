@@ -5,25 +5,15 @@ export const Container = styled.div`
     flex-direction: column;
     width: 100%;
     height: 100vh;
-`;
-
-export const Main = styled.div`
-    flex: 1;
-    overflow-y: scroll;
-    width: 100%;
-    height: 100vh;
-    /* padding: 0 40px;
-    padding-top: 40px;
-    background: #F2F5FC; */
 
     overflow-y: scroll;
     ::-webkit-scrollbar {
         display: none;
     }
+`;
 
-    >div {
-        /* background: #F2F5FC; */
-        /* padding: 40px; */
-        /* height: 100vh; */
-    }
+export const Main = styled.div`
+    flex: 1;
+    width: 100%;
+
 `;
