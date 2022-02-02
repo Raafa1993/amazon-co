@@ -27,6 +27,7 @@ import {
 
 interface OrderProps {
   id_grafica: string;
+  nome_usuario: string;
   unidade: string;
   setor: string;
   id_pedido: string;
@@ -64,20 +65,22 @@ export default function Home() {
   const [filterStatus, setFilterStatus] = useState("todos");
   const [filterOrder, setFilterOrder] = useState("criado");
   const [filterQuantity, setFilterQuantity] = useState("0-99999");
+  const [search, setSearch] = useState("");
 
   const [total, setTotal] = useState(0);
   const [pages, setPages] = useState([]);
   const [currentPage, setCurrentPage] = useState<any>(1);
 
+  console.log(search)
+
   useEffect(() => {
     setLoad(true);
     api
       .get(
-        `pedido-grafica?${filterStatus}=pendente&ordem=${filterOrder}&pagina=1&quantidade=${filterQuantity}&perPage=${limit}`,
+        `pedido-grafica?status=${filterStatus}&ordem=${filterOrder}&pagina=${currentPage}&quantidade=${filterQuantity}&perPage=${limit}pesquisa=pedido=${search}`,
       )
       .then(res => {
         setData(res.data.result.data);
-
         setTotal(res.data.result.pagination.total);
         const totalPages = Math.ceil(total / limit);
 
@@ -89,7 +92,7 @@ export default function Home() {
         setPages(arrayPages as any);
         setLoad(false);
       });
-  }, [filterOrder, filterStatus, filterQuantity, total, currentPage]);
+  }, [filterOrder, filterStatus, filterQuantity, total, currentPage, search]);
 
   function handleOnOffSide(id: any) {
     setIdModal(id);
@@ -127,20 +130,39 @@ export default function Home() {
     });
   }
 
+  function handleOnFilterStatus(value: any) {
+    setFilterStatus(value)
+    setCurrentPage(1)
+  }
+
+  function handleOnFilterOrder(value: any) {
+    setFilterOrder(value)
+    setCurrentPage(1)
+  }
+
+  function handleOnFilterQuantity(value: any) {
+    setFilterQuantity(value)
+    setCurrentPage(1)
+  }
+
+  function handleOnSearch(value: any) {
+    setSearch(value)
+    setCurrentPage(1)
+  }
+
   return (
     <Container>
       <SectionFilter>
         <h1 className="TitleHome">Pedidos</h1>
         <Field className="SelectDefault">
           <SelectDefault
-            width
+            isWidth={true}
             value="todos"
             placeholder="Selecione Status"
-            onChangeText={value => setFilterStatus(value)}
+            onChangeText={value => handleOnFilterStatus(value)}
           >
             <option value="concluido">Concluido</option>
             <option value="pendente">Pendente</option>
-            <option value="impedimento">Impedimento</option>
             <option value="cancelado">Cancelado</option>
             <option value="todos">Todos</option>
           </SelectDefault>
@@ -148,24 +170,22 @@ export default function Home() {
 
         <Field className="SelectDefault">
           <SelectDefault
-            width
+            isWidth={true}
             value="criado"
             placeholder="Selecione Filtro"
-            onChangeText={value => setFilterOrder(value)}
+            onChangeText={value => handleOnFilterOrder(value)}
           >
             <option value="criado">Mais recente</option>
-            <option value="criado">Criado</option>
-            <option value="nome">Nome</option>
-            <option value="usuario">Usuario</option>
+            <option value="id_usuario">Usuario</option>
           </SelectDefault>
         </Field>
 
         <Field className="SelectFr">
           <SelectDefault
-            width
+            isWidth={true}
             value="0-99999"
             placeholder="Filtrar por Quantidade"
-            onChangeText={value => setFilterQuantity(value)}
+            onChangeText={value => handleOnFilterQuantity(value)}
           >
             <option value="0-50">0 a 50</option>
             <option value="50-100">50 a 100</option>
@@ -176,10 +196,10 @@ export default function Home() {
 
         <Field className="SearchDefault">
           <InputDefault
-            onChangeText={value => console.log(value)}
-            value={""}
             search={true}
-            placeholder={"Busca com icone"}
+            placeholder={"Busca"}
+            value={""}
+            onChangeText={value => handleOnSearch(value)}
           />
         </Field>
       </SectionFilter>
@@ -220,7 +240,7 @@ export default function Home() {
                         onClick={() => history.push(`/pedido/${row.id_pedido}`)}
                       />
                     </td>
-                    <td>{row.id_grafica}</td>
+                    <td>{row.nome_usuario}</td>
                     <td>{row.unidade}</td>
                     <td>{row.setor}</td>
                     <td>{row.id_pedido}</td>
@@ -253,7 +273,7 @@ export default function Home() {
                     <td>
                       <ButtonNotification
                         icon={<IconCancel />}
-                        disabled={row.status === 'cancelado' ? true : false}
+                        disabled={row.status === "cancelado" ? true : false}
                         onClick={() => handleOnCancel(row.id_pedido)}
                       />
                     </td>
@@ -264,40 +284,36 @@ export default function Home() {
           )}
         </SectionTable>
 
-        {load ? (
-          <Skeleton height={40} style={{ marginTop: "20px" }} />
-        ) : (
-          <SectionPagination>
-            <PaginationButton>
-              <ButtonPagination
-                type="button"
-                onClick={() => setCurrentPage(currentPage - 1)}
-                disabled={currentPage < 2}
-                isActive={currentPage < 2}
+        <SectionPagination>
+          <PaginationButton>
+            <ButtonPagination
+              type="button"
+              onClick={() => setCurrentPage(currentPage - 1)}
+              disabled={currentPage < 2}
+              isActive={currentPage < 2}
+            >
+              Voltar
+            </ButtonPagination>
+            {pages.map(page => (
+              <PaginationItem
+                isSelect={page + 1 === currentPage}
+                key={page}
+                onClick={() => setCurrentPage(parseInt(page) + 1)}
+                disabled={page + 1 === currentPage}
               >
-                Voltar
-              </ButtonPagination>
-              {pages.map(page => (
-                <PaginationItem
-                  isSelect={page + 1 === currentPage}
-                  key={page}
-                  onClick={() => setCurrentPage(parseInt(page) + 1)}
-                  disabled={page + 1 === currentPage}
-                >
-                  {page + 1}
-                </PaginationItem>
-              ))}
-              <ButtonPagination
-                type="button"
-                onClick={() => setCurrentPage(currentPage + 1)}
-                disabled={currentPage === pages.length}
-                isActive={currentPage === pages.length}
-              >
-                Avançar
-              </ButtonPagination>
-            </PaginationButton>
-          </SectionPagination>
-        )}
+                {page + 1}
+              </PaginationItem>
+            ))}
+            <ButtonPagination
+              type="button"
+              onClick={() => setCurrentPage(currentPage + 1)}
+              disabled={currentPage === pages.length}
+              isActive={currentPage === pages.length}
+            >
+              Avançar
+            </ButtonPagination>
+          </PaginationButton>
+        </SectionPagination>
       </Main>
 
       <Modal

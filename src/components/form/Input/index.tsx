@@ -72,11 +72,15 @@ export default function Input({
 
   return (
     <Container 
-      isField={isField}
-      isFocused={isFocused}
-      isErrored={!!error}
+    isFocused={isFocused}
+    isErrored={!!error}
+    isField={isField}
     >
-      <label htmlFor={name}>{label}</label>
+      <label 
+        htmlFor={name}
+      >
+        {label}
+      </label>
 
       <input
         onFocus={handleInputFocus}

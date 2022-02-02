@@ -1,11 +1,11 @@
 import styled, { css } from "styled-components";
 
 interface Props {
-    isField: boolean;
-    isFocused: boolean;
-    isDisabled?: boolean;
-    isErrored: boolean;
-  }
+  isField: boolean;
+  isFocused: boolean;
+  isDisabled?: boolean;
+  isErrored: boolean;
+}
 
 export const Container = styled.div<Props>`
   width: 100%;
@@ -44,13 +44,17 @@ export const Container = styled.div<Props>`
       font-weight: 600;
     }
 
-    ${props => props.isFocused && css`
-      border: 1px solid var(--green);
-    `}
+    ${props =>
+      props.isFocused &&
+      css`
+        border: 1px solid var(--green);
+      `}
 
-    ${props => props.isErrored && css`
-      border-color: #c53030;
-    `}
+    ${props =>
+      props.isErrored &&
+      css`
+        border-color: #c53030;
+      `}
   }
 
   button {
@@ -71,14 +75,13 @@ export const Container = styled.div<Props>`
     margin-bottom: 12px;
     color: var(--darkLabel);
 
-    ${props => props.isFocused && css`
-      color: var(--green);
-    `}
-
-    ${props => props.isField && css`
-      color: var(--green);
-    `}
+      ${props =>
+      props.isFocused &&
+      css`
+        color: var(--green);
+      `}
   }
+
 `;
 
 export const Error = styled.div`

@@ -2,7 +2,7 @@ import styled, { css } from "styled-components";
 
 interface Props {
   ronded?: boolean;
-  width?: boolean;
+  isWidth?: boolean;
 }
 
 export const Container = styled.div<Props>`
@@ -22,7 +22,7 @@ export const Container = styled.div<Props>`
     border-radius: 0;
   `}
 
-  ${props => props.width && css`
+  ${props => props.isWidth && css`
     width: 100%;
   `}
 

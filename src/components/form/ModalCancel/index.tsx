@@ -56,6 +56,7 @@ export default function ModalCancel({
   function handleOnCloseMessage() {
     setSubmit(!submit);
     onClose();
+    window.location.reload();
   }
 
   function handleOnCancelRequest() {

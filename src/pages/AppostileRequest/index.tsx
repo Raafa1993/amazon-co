@@ -20,15 +20,13 @@ import {
 import LinkDownload from '../../components/form/LinkDownload';
 
 interface OrderProps {
-  id_usuario?: string;
-  id_grafica?: string;
+  nome?: string;
+  nome_usuario?: string;
   unidade: string;
   setor: string;
-  id_pedido: string;
   qtd_paginas: string;
   qtd_copias: string;
   valor: string;
-  criado: string;
   status: string;
   id_servico: string;
   observacao?: string;
@@ -47,15 +45,11 @@ export default function AppostileRequest({props}: any) {
   const [file, setFile] = useState('');
   
   const [data, setData] = useState<OrderProps>({
-    id_usuario: '',
-    id_grafica: '',
     unidade: '',
     setor: '',
-    id_pedido: '',
     qtd_paginas: '',
     qtd_copias: '',
     valor: '',
-    criado: '',
     status: '',
     id_servico: '',
     observacao: '',
@@ -76,7 +70,7 @@ export default function AppostileRequest({props}: any) {
     <Container>
       <Content>
         <PanelLeft>
-          <h1>{`Pedido Apostilha ${id}`}</h1>
+          <h1>{`Pedido ${data.nome}`}</h1>
           <Form ref={formRef} onSubmit={{} as any}>
             <h2>Dados do pedido</h2>
 
@@ -92,9 +86,9 @@ export default function AppostileRequest({props}: any) {
               />
 
               <Input
-                defaultValue={data.id_usuario}
+                defaultValue={data.nome_usuario}
                 type="text"
-                name="id_usuario"
+                name="nome_usuario"
                 disabled
                 label="Nome do Usuario"
                 placeholder='Digite aqui'
@@ -110,9 +104,9 @@ export default function AppostileRequest({props}: any) {
               />
 
               <Input
-                defaultValue={data.id_pedido}
+                defaultValue={data.nome}
                 type="text"
-                name="ordername"
+                name="nome"
                 disabled
                 label="Nome do Pedido"
                 placeholder='Digite aqui'

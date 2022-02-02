@@ -30,6 +30,7 @@ import {
 
 interface OrderProps {
   id_usuario: string;
+  nome: string;
   unidade: string;
   setor: string;
   id_pedido: string;
@@ -60,6 +61,7 @@ export default function HomeUser() {
 
   const [filterStatus, setFilterStatus] = useState("todos");
   const [filterOrder, setFilterOrder] = useState("criado");
+  const [search, setSearch] = useState("");
 
   const [total, setTotal] = useState(0);
   const [pages, setPages] = useState([]);
@@ -69,7 +71,7 @@ export default function HomeUser() {
     setLoad(true);
     api
       .get(
-        `pedido-usuario?status=${filterStatus}&ordem=${filterOrder}&pagina=${currentPage}&perPage=${limit}`,
+        `pedido-usuario?status=${filterStatus}&ordem=${filterOrder}&pagina=${currentPage}&perPage=${limit}&pesquisa=${search}`,
       )
       .then(res => {
         setData(res.data.result.data);
@@ -85,7 +87,7 @@ export default function HomeUser() {
         setPages(arrayPages as any);
         setLoad(false);
       });
-  }, [filterStatus, filterOrder, total, currentPage]);
+  }, [filterStatus, filterOrder, total, currentPage, search]);
 
   function handleOnOffSide(id: any) {
     setIdModal(id);
@@ -99,6 +101,21 @@ export default function HomeUser() {
     });
   }
 
+  function handleOnFilterStatus(value: any) {
+    setFilterStatus(value)
+    setCurrentPage(1)
+  }
+
+  function handleOnFilterOrder(value: any) {
+    setFilterOrder(value)
+    setCurrentPage(1)
+  }
+
+  function handleOnSearch(value: any) {
+    setSearch(value)
+    setCurrentPage(1)
+  }
+
   return (
     <Container>
       <SectionFilter>
@@ -106,38 +123,36 @@ export default function HomeUser() {
 
         <Field className="SelectDefault">
           <SelectDefault
-            width
+            isWidth={true}
             value="todos"
             placeholder="Selecione Status"
-            onChangeText={value => setFilterStatus(value)}
+            onChangeText={value => handleOnFilterStatus(value)}
           >
             <option value="concluido">Concluido</option>
             <option value="pendente">Pendente</option>
-            <option value="impedimento">Impedimento</option>
+            <option value="cancelado">Pendente</option>
             <option value="todos">Todos</option>
           </SelectDefault>
         </Field>
 
         <Field className="SelectDefault">
           <SelectDefault
-            width
+            isWidth={true}
             value=""
             placeholder="Selecione Filtro"
-            onChangeText={value => setFilterOrder(value)}
+            onChangeText={value => handleOnFilterOrder(value)}
           >
             <option value="criado">Mais recente</option>
-            <option value="criado">Criado</option>
-            <option value="nome">Nome</option>
-            <option value="usuario">Usuario</option>
+            <option value="id_usuario">Usuario</option>
           </SelectDefault>
         </Field>
 
         <Field className="SearchDefault">
           <InputDefault
-            onChangeText={value => console.log(value)}
-            value={""}
             search={true}
-            placeholder={"Busca com icone"}
+            placeholder={"Busca"}
+            value={""}
+            onChangeText={value => handleOnSearch(value)}
           />
         </Field>
 
@@ -185,7 +200,7 @@ export default function HomeUser() {
                       onClick={() => history.push(`/pedido/${row.id_pedido}`)}
                     />
                   </td>
-                  <td>{row.id_pedido}</td>
+                  <td>{row.nome}</td>
                   <td>{row.qtd_paginas}</td>
                   <td>{row.qtd_copias}</td>
                   <td>
@@ -224,40 +239,36 @@ export default function HomeUser() {
         )}
       </SectionTable>
 
-      {load ? (
-        <Skeleton height={40} style={{ marginTop: "20px" }} />
-      ) : (
-        <SectionPagination>
-          <PaginationButton>
-            <ButtonPagination
-              type="button"
-              onClick={() => setCurrentPage(currentPage - 1)}
-              disabled={currentPage < 2}
-              isActive={currentPage < 2}
+      <SectionPagination>
+        <PaginationButton>
+          <ButtonPagination
+            type="button"
+            onClick={() => setCurrentPage(currentPage - 1)}
+            disabled={currentPage < 2}
+            isActive={currentPage < 2}
+          >
+            Voltar
+          </ButtonPagination>
+          {pages.map(page => (
+            <PaginationItem
+              isSelect={page + 1 === currentPage}
+              key={page}
+              onClick={() => setCurrentPage(page + 1)}
+              disabled={page + 1 === currentPage}
             >
-              Voltar
-            </ButtonPagination>
-            {pages.map(page => (
-              <PaginationItem
-                isSelect={page + 1 === currentPage}
-                key={page}
-                onClick={() => setCurrentPage(parseInt(page) + 1)}
-                disabled={page + 1 === currentPage}
-              >
-                {page + 1}
-              </PaginationItem>
-            ))}
-            <ButtonPagination
-              type="button"
-              onClick={() => setCurrentPage(currentPage + 1)}
-              disabled={currentPage === pages.length}
-              isActive={currentPage === pages.length}
-            >
-              Avançar
-            </ButtonPagination>
-          </PaginationButton>
-        </SectionPagination>
-      )}
+              {page + 1}
+            </PaginationItem>
+          ))}
+          <ButtonPagination
+            type="button"
+            onClick={() => setCurrentPage(currentPage + 1)}
+            disabled={currentPage === pages.length}
+            isActive={currentPage === pages.length}
+          >
+            Avançar
+          </ButtonPagination>
+        </PaginationButton>
+      </SectionPagination>
 
       <ModalUser
         id="overlayModal"

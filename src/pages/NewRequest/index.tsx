@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useAuth } from "../../hooks/Auth";
 import IconArrowLeft from "../../assets/icons/IconArrowLeft";
@@ -164,6 +164,10 @@ export default function NewRequest() {
         setLoad(false);
         toast.success("Pedido cadastrado com sucesso!");
 
+        setTimeout(() => {
+          history.push('/home')
+        }, 3000)
+
       } catch (err: any) {
         setLoad(false);
 
@@ -192,7 +196,7 @@ export default function NewRequest() {
                 disabled
                 label="Nome do Usuario"
                 placeholder="Digite aqui"
-                value={2}
+                value={dataUser?.nome}
               />
 
               <Input
@@ -225,7 +229,7 @@ export default function NewRequest() {
                 type="text"
                 name="qtd_paginas"
                 // disabled={idPedido ? true : false}
-                label="Quantidade de paginas"
+                label="Quantidade de páginas"
                 placeholder="Digite aqui"
                 onChange={handleinputChange}
               />
@@ -234,13 +238,13 @@ export default function NewRequest() {
                 type="text"
                 name="qtd_copias"
                 // disabled={idPedido ? true : false}
-                label="Qunatidade de copias"
+                label="Quantidade de cópias"
                 placeholder="Digite aqui"
                 onChange={handleinputChange}
               />
 
               <Select
-                label="Servicço"
+                label="Serviço"
                 name="id_servico"
                 // disabled={idPedido ? true : false}
                 placeholder="Selecione uma opção"

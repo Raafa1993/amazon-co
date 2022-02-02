@@ -7,6 +7,8 @@ export const Container = styled.div`
     height: 100vh;
 
     overflow-y: scroll;
+    scrollbar-width: thin;
+
     ::-webkit-scrollbar {
         display: none;
     }
@@ -15,5 +17,10 @@ export const Container = styled.div`
 export const Main = styled.div`
     flex: 1;
     width: 100%;
+
+     /* overflow-y: scroll;
+    ::-webkit-scrollbar {
+        display: none;
+    } */
 
 `;

@@ -8,10 +8,10 @@ export const Container = styled.div`
   background: #F2F5FC;
   padding: 40px;
 
-  overflow-y: scroll;
+  /* overflow-y: scroll;
   ::-webkit-scrollbar {
     display: none;
-  }
+  } */
 
 `;
 

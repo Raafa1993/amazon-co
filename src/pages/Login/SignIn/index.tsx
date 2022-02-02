@@ -74,7 +74,6 @@ export default function SignIn() {
       })
 
       setLoad(false)
-      toast.success('Login realizado com sucesso!')
 
       setTimeout(() => {
         history.push('/home')
@@ -121,7 +120,7 @@ export default function SignIn() {
                     value: "/login",
                   },
                   {
-                    label: "Grafíca",
+                    label: "Gráfica",
                     value: "/login-grafica",
                   },
                 ]}
