@@ -15,6 +15,10 @@ import api from "../../services/api";
 import ButtonSubmit from "../../components/form/ButtonSubmit";
 import Select from "../../components/form/Select";
 
+import NumberFormat from 'react-number-format';
+import NewInputMask from '../../components/form/NewInputMask'
+
+
 import {
   Container,
   Content,
@@ -56,13 +60,15 @@ export default function NewRequest() {
     id_servico: "",
   });
 
-  const [currency, setCurrency] = useState<any>(0);
+  const [currencyValue, setCurrencyValue] = useState<any>(0);
   const [serviceSelect, setServiceSelect] = useState({ valor_unitario: 0 });
   const [loadUser, setLoadUser] = useState(true);
   const [load, setLoad] = useState(false);
   const [file, setFile] = useState<any>('');
+  
 
   useEffect(() => {
+    
     setLoadUser(true);
     api.get(`usuario/${user.id}`).then(res => {
       setDataUser(res.data.result);
@@ -92,16 +98,17 @@ export default function NewRequest() {
       : {
           valor_unitario: 0,
         };
-    const valueTotal =
+    var valueTotal =
       parseInt(formData.qtd_paginas) *
       parseInt(formData.qtd_copias) *
       parseInt(newServiceSelect.valor_unitario);
-    setCurrency(valueTotal);
-    setServiceSelect({ ...newServiceSelect });
-  }, [formData]);
+      
+      
+      setCurrencyValue(valueTotal);
+      setServiceSelect({ ...newServiceSelect });
+    }, [formData]);
 
   async function handleChangeFile(e:any){
-    console.log(e)
     if (e.target.files.length) {
       const data = new FormData();
       data.append("projeto", e.target.files[0]);
@@ -126,7 +133,7 @@ export default function NewRequest() {
           qtd_copias: Yup.string().required("Campo obrigatorio"),
           unidade: Yup.string().required("Campo obrigatorio"),
           setor: Yup.string().required("Campo obrigatorio"),
-          valor: Yup.string().required("Campo obrigatorio"),
+          // valor: Yup.string().required("Campo obrigatorio"),
           observacao: Yup.string().required("Campo obrigatorio"),
         });
 
@@ -142,7 +149,6 @@ export default function NewRequest() {
           qtd_copias,
           unidade,
           setor,
-          valor,
           observacao,
         }: any = data;
 
@@ -154,7 +160,7 @@ export default function NewRequest() {
           qtd_copias,
           unidade,
           setor,
-          valor,
+          valor: currencyValue,
           observacao,
           arquivo: file
         };
@@ -196,7 +202,7 @@ export default function NewRequest() {
                 disabled
                 label="Nome do Usuario"
                 placeholder="Digite aqui"
-                value={dataUser?.nome}
+                value={dataUser?.nome || ''}
               />
 
               <Input
@@ -205,7 +211,7 @@ export default function NewRequest() {
                 disabled
                 label="Nome da Unidade"
                 placeholder="Digite aqui"
-                defaultValue={dataUser?.unidade}
+                defaultValue={dataUser?.unidade || ''}
               />
 
               <Input
@@ -214,13 +220,12 @@ export default function NewRequest() {
                 disabled
                 label="Setor"
                 placeholder="Digite aqui"
-                defaultValue={dataUser?.setor}
+                defaultValue={dataUser?.setor || ''}
               />
 
               <Input
                 type="text"
                 name="nome"
-                // disabled={idPedido ? true : false}
                 label="Nome do pedido"
                 placeholder="Digite aqui"
               />
@@ -228,7 +233,6 @@ export default function NewRequest() {
               <Input
                 type="text"
                 name="qtd_paginas"
-                // disabled={idPedido ? true : false}
                 label="Quantidade de páginas"
                 placeholder="Digite aqui"
                 onChange={handleinputChange}
@@ -237,7 +241,6 @@ export default function NewRequest() {
               <Input
                 type="text"
                 name="qtd_copias"
-                // disabled={idPedido ? true : false}
                 label="Quantidade de cópias"
                 placeholder="Digite aqui"
                 onChange={handleinputChange}
@@ -246,7 +249,6 @@ export default function NewRequest() {
               <Select
                 label="Serviço"
                 name="id_servico"
-                // disabled={idPedido ? true : false}
                 placeholder="Selecione uma opção"
                 onChange={handleinputChange}
               >
@@ -261,26 +263,23 @@ export default function NewRequest() {
               <Input
                 type="text"
                 name="valorUnit"
-                // disabled={idPedido ? true : false}
+                disabled={true}
                 label="Valor Unitario"
+                mask="currency"
                 placeholder="R$:"
                 value={serviceSelect.valor_unitario}
                 onChange={handleinputChange}
               />
 
-              <Input
-                type="text"
-                name="valor"
-                disabled
+              <NewInputMask
+                valueCurrency={currencyValue}
                 label="Valor Total"
-                placeholder="R$:"
-                value={currency ? currency : ""}
+                name="valor"
               />
 
               <TextArea
                 defaultValue=""
                 name="observacao"
-                // disabled={idPedido ? true : false}
                 label="Observação"
                 placeholder="Digite aqui"
               />

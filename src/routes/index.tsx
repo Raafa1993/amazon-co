@@ -1,12 +1,10 @@
-import { Redirect, Switch } from "react-router-dom";
+import { Switch } from "react-router-dom";
 import PrivateRoutes from "./PrivateRoutes";
 import Layout from "../components/Layout";
 import AppostileRequest from "../pages/AppostileRequest";
 import ForgottenPassword from "../pages/Login/ForgottenPassword";
 import Home from "../pages/Home";
 import MyAccount from "../pages/MyAccount";
-import MyAppostileRequest from "../pages/MyAppostileRequest";
-import MyRequests from "../pages/MyRequests";
 import NewRequest from "../pages/NewRequest";
 import SignIn from "../pages/Login/SignIn";
 import SignInUp from "../pages/Login/SignInUp";
@@ -35,8 +33,6 @@ function Routes({ props }: any) {
 
         <PrivateRoutes path="/minha-conta" component={MyAccount} isPrivate  />
         <PrivateRoutes path="/pedido/:id" component={AppostileRequest} isPrivate  />
-        <PrivateRoutes path="/meus-pedidos" component={MyRequests} isPrivate  />
-        <PrivateRoutes path="/meus-pedidos/:id" component={MyAppostileRequest} isPrivate  />
         <PrivateRoutes path="/novo-pedido" component={NewRequest} isPrivate  />
       </Layout>
     </Switch>

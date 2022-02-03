@@ -5,29 +5,24 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { IconBaseProps } from "react-icons";
-import { maskPhone, maskCEP, maskCPF, maskDate, currency } from "./masks";
 import { useField } from '@unform/core';
+import NumberFormat from 'react-number-format';
+
 
 import { Container, Error } from "./styles";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
   label: string;
-  handleOnPassword?: () => void;
-  Icon?: React.ComponentType<IconBaseProps>;
-  mask?: string;
+  valueCurrency?: any;
 }
 
-export default function Input({
+export default function NewInputMask({
   name,
   label,
-  Icon,
-  mask,
-  handleOnPassword,
-  ...rest
+  valueCurrency,
 }: InputProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<any>(null);
   const [isFocused, setIsFocused] = useState(false);
   const [isField, setIsField] = useState(false);
   const { fieldName, defaultValue, error, registerField, } = useField(name)
@@ -40,25 +35,6 @@ export default function Input({
     setIsFocused(false);
     setIsField(!!inputRef.current?.value);
   }, []);
-
-  const handleKeyUp = useCallback(e => {
-      if (mask === "cpf") {
-        maskCPF(e);
-      } else if (mask === "cep") {
-        maskCEP(e);
-      } else if (mask === "date") {
-        maskDate(e);
-      } else if (mask === "currency") {
-        currency(e);
-      } else if (mask === "fone") {
-        maskPhone(e);
-      } else {
-        return;
-      }
-      return;
-    },
-    [mask],
-  );
 
   useEffect(() => {
     registerField({
@@ -82,22 +58,25 @@ export default function Input({
         {label}
       </label>
 
-      <input
+      <NumberFormat
+        className="teste"
+        thousandsGroupStyle="thousand"
+        value={valueCurrency}
+        prefix="R$: "
+        decimalSeparator="."
+        displayType="input"
+        type="text"
+        thousandSeparator={true}
+        allowNegative={true} 
+        disabled
+
         onFocus={handleInputFocus}
         onBlur={handleInputBlur}
-        onKeyUp={handleKeyUp}
         defaultValue={defaultValue}
         ref={inputRef}
         id={name}
         name={name}
-        {...rest}
       />
-
-      {Icon && (
-        <button type="button" onClick={handleOnPassword}>
-          <Icon size={20} />
-        </button>
-      )}
 
       {error && (
         <Error>

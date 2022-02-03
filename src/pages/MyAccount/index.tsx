@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuth } from "../../hooks/Auth";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import api from "../../services/api";
 import * as Yup from "yup";
 import { Form } from "@unform/web";
@@ -15,7 +15,6 @@ import IconArrowLeft from "../../assets/icons/IconArrowLeft";
 import {
   Container,
   Content,
-  ChangePassword,
   BackToHome,
   PanelLeft,
   PanelRight,

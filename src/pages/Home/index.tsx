@@ -71,10 +71,10 @@ export default function Home() {
   const [pages, setPages] = useState([]);
   const [currentPage, setCurrentPage] = useState<any>(1);
 
-  console.log(search)
 
   useEffect(() => {
     setLoad(true);
+
     api
       .get(
         `pedido-grafica?status=${filterStatus}&ordem=${filterOrder}&pagina=${currentPage}&quantidade=${filterQuantity}&perPage=${limit}pesquisa=pedido=${search}`,

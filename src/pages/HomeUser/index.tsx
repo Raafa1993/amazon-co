@@ -130,7 +130,7 @@ export default function HomeUser() {
           >
             <option value="concluido">Concluido</option>
             <option value="pendente">Pendente</option>
-            <option value="cancelado">Pendente</option>
+            <option value="cancelado">Cancelado</option>
             <option value="todos">Todos</option>
           </SelectDefault>
         </Field>
