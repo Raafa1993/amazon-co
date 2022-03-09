@@ -156,7 +156,7 @@ export default function SignIn() {
                   type="button"
                   onClick={() => history.push("/recuperar-senha")}
                 >
-                  Esquecia a senha
+                  Esqueceu a senha?
                 </button>
 
                 <ButtonSubmit
