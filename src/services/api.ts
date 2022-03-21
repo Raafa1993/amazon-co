@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const api = axios.create({
     baseURL: 'https://amazoncopygraficas.backendtropa.com.br/',
-    // baseURL: 'http://192.168.15.5:3334',
+    // baseURL: 'http://192.168.15.9:3334',
 })
 
 export default api

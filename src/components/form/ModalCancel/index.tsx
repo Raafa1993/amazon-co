@@ -60,11 +60,15 @@ export default function ModalCancel({
   }
 
   function handleOnCancelRequest() {
-    api.delete(`pedido/${idRequest}`).then((res) => {
+    api.put(`pedido/${idRequest}`, {
+      motivo_cancelamento: description
+    }).then((res) => {
       setData(res.data)
       setSubmit(!setSubmit);
     })
   }
+
+  console.log(description)
 
   return (
     <>

@@ -30,6 +30,7 @@ interface OrderProps {
   status: string;
   id_servico: string;
   observacao?: string;
+  motivo_cancelamento?: string;
 }
 
 interface ParamsProps {
@@ -65,6 +66,8 @@ export default function AppostileRequest({props}: any) {
     })
     setLoad(false)
   }, [user, id])
+
+  console.log(data)
 
   return (
     <Container>
@@ -156,6 +159,18 @@ export default function AppostileRequest({props}: any) {
                 label="Observação"
                 placeholder='Digite aqui'
               />
+
+              {data.motivo_cancelamento && (
+                <div className='requestCancel'>
+                  <TextArea 
+                    value={data.motivo_cancelamento}
+                    name="observacao"
+                    disabled
+                    label="Motivo cancelamento"
+                    placeholder='Digite aqui'
+                  />
+                </div>
+              )}
             </div>
           </Form>
         </PanelLeft>

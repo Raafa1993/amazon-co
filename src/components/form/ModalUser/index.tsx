@@ -16,6 +16,7 @@ interface DataModalProps {
   textArea?: boolean;
   buttonSend?: string;
   buttonCancel?: string;
+  cancellation?: string;
 }
 
 interface ModalProps {
@@ -52,6 +53,8 @@ export default function ModalUser({
       setData(res.data.result[0])
     })
   }, [idRequest])
+  
+  console.log(dataModal)
 
   return (
     <ContainerOverlay id={id} openModal={openModal} onClick={handleCloseModal}>
@@ -65,7 +68,7 @@ export default function ModalUser({
             onChangeText={value => setDescription(value)}
             placeholder="Digite aqui"
             disabled
-            value={data?.descricao}
+            value={dataModal?.cancellation ? dataModal.cancellation : data?.descricao}
           />
         </SectionTextArea>
 

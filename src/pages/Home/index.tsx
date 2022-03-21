@@ -24,6 +24,7 @@ import {
   PaginationItem,
   ButtonPagination,
 } from "./styles";
+import ModalUser from "../../components/form/ModalUser";
 
 interface OrderProps {
   id_grafica: string;
@@ -36,6 +37,7 @@ interface OrderProps {
   valor: number;
   criado: string;
   status: string;
+  motivo_cancelamento?: string;
 }
 
 interface ModalProps {
@@ -48,6 +50,7 @@ interface ModalProps {
     titleMessage?: string;
     subtitleMessage?: string;
   };
+  cancellation?: string;
 }
 
 const limit = 10;
@@ -59,8 +62,10 @@ export default function Home() {
   const [data, setData] = useState<OrderProps[]>([]);
   const [idModal, setIdModal] = useState(Number);
   const [dataModal, setDataModal] = useState<ModalProps>();
+  const [dataModalUser, setDataModalUser] = useState<ModalProps>();
   const [modalCancel, setModalCancel] = useState(false);
   const [dataModalCancel, setDataModalCancel] = useState<ModalProps>();
+  const [modalUser, setModalUser] = useState(false);
 
   const [filterStatus, setFilterStatus] = useState("todos");
   const [filterOrder, setFilterOrder] = useState("criado");
@@ -112,22 +117,36 @@ export default function Home() {
     });
   }
 
-  function handleOnCancel(id: any) {
-    setIdModal(id);
-    setModalCancel(!modalCancel);
+  function handleOnCancel(id: any, cancel: string) {
+    
+    if(cancel) {
+      setIdModal(id);
+      setModalUser(!modalUser);
 
-    setDataModalCancel({
-      title: "Tem certeza que deseja Cancelar esse pedido?",
-      subtitle:
-        "Para cancelar é necessario colocar um impedimento avisando o motivo do cancelamento.",
-      textArea: true,
-      buttonSend: "Excluir",
-      buttonCancel: "Voltar",
-      message: {
-        titleMessage: "Impedimento registrado com sucesso",
-        subtitleMessage: "Uma boa descrição",
-      },
-    });
+      setDataModalUser({
+        title: "Pedido cancelado",
+        textArea: true,
+        buttonSend: "Ir para detalhes do pedido",
+        buttonCancel: "Cancelar",
+        cancellation: cancel,
+      });
+    } else {
+      setIdModal(id);
+      setModalCancel(!modalCancel);
+      setDataModalCancel({
+        title: "Tem certeza que deseja Cancelar esse pedido?",
+        subtitle:
+          "Para cancelar é necessario colocar um impedimento avisando o motivo do cancelamento.",
+        textArea: true,
+        buttonSend: "Excluir",
+        buttonCancel: "Voltar",
+        message: {
+          titleMessage: "Impedimento registrado com sucesso",
+          subtitleMessage: "Uma boa descrição",
+        },
+      });
+    }
+
   }
 
   function handleOnFilterStatus(value: any) {
@@ -267,14 +286,15 @@ export default function Home() {
                     <td className="buttonIcons">
                       <ButtonNotification
                         icon={<IconBallonMessage />}
+                        disabled={row.status === "cancelado" ? true : false}
                         onClick={() => handleOnOffSide(row.id_pedido)}
                       />
                     </td>
                     <td>
                       <ButtonNotification
                         icon={<IconCancel />}
-                        disabled={row.status === "cancelado" ? true : false}
-                        onClick={() => handleOnCancel(row.id_pedido)}
+                        // disabled={row.status === "cancelado" ? true : false}
+                        onClick={() => handleOnCancel(row.id_pedido, row.motivo_cancelamento || '')}
                       />
                     </td>
                   </tr>
@@ -330,6 +350,14 @@ export default function Home() {
         openModal={modalCancel}
         idRequest={idModal}
         dataModal={dataModalCancel as any}
+      />
+
+      <ModalUser
+        id="overlayModal"
+        idRequest={idModal}
+        onClose={() => setModalUser(!modalUser)}
+        openModal={modalUser}
+        dataModal={dataModalUser as any}
       />
     </Container>
   );

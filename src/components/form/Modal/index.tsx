@@ -20,6 +20,7 @@ interface DataModalProps {
     titleMessage?: string;
     subtitleMessage?: string;
   };
+  cancellation?: string;
 }
 
 interface ModalProps {
@@ -74,6 +75,8 @@ export default function Modal({
       });
   }
 
+  console.log(idRequest)
+
   return (
     <>
       {submit === true ? (
@@ -92,7 +95,7 @@ export default function Modal({
                 <InputTextarea
                   onChangeText={value => setDescription(value)}
                   placeholder="Digite aqui, minimo 10 caracteres"
-                  value={""}
+                  value={dataModal?.cancellation ? dataModal.cancellation : ''}
                 />
               </SectionTextArea>
 
