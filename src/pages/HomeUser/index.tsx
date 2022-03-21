@@ -27,6 +27,7 @@ import {
   SectionTable,
   SectionPagination,
 } from "./styles";
+import ModalCancel from "../../components/form/ModalCancel";
 
 interface OrderProps {
   id_usuario: string;
@@ -44,9 +45,14 @@ interface OrderProps {
 
 interface ModalProps {
   title?: string;
+  subtitle?: string;
   textArea?: boolean;
   buttonSend?: string;
   buttonCancel?: string;
+  message?: {
+    titleMessage?: string;
+    subtitleMessage?: string;
+  };
 }
 
 const limit = 10;
@@ -57,6 +63,8 @@ export default function HomeUser() {
   const [data, setData] = useState<OrderProps[]>([]);
   const [load, setLoad] = useState(true);
   const [idModal, setIdModal] = useState(0);
+  const [modalCancel, setModalCancel] = useState(false);
+  const [dataModalCancel, setDataModalCancel] = useState<ModalProps>();
   const [dataModal, setDataModal] = useState<ModalProps>();
 
   const [filterStatus, setFilterStatus] = useState("todos");
@@ -98,6 +106,24 @@ export default function HomeUser() {
       textArea: true,
       buttonSend: "Ir para detalhes do pedido",
       buttonCancel: "Cancelar",
+    });
+  }
+
+  function handleOnCancel(id: any) {
+    setIdModal(id);
+    setModalCancel(!modalCancel);
+
+    setDataModalCancel({
+      title: "Tem certeza que deseja Cancelar esse pedido?",
+      subtitle:
+        "Para cancelar é necessario colocar um impedimento avisando o motivo do cancelamento.",
+      textArea: true,
+      buttonSend: "Excluir",
+      buttonCancel: "Voltar",
+      message: {
+        titleMessage: "Impedimento registrado com sucesso",
+        subtitleMessage: "Uma boa descrição",
+      },
     });
   }
 
@@ -230,7 +256,11 @@ export default function HomeUser() {
                     />
                   </td>
                   <td align="center" width={10}>
-                    <ButtonNotification icon={<IconCancel />} disabled />
+                    <ButtonNotification
+                      icon={<IconCancel />}
+                      disabled={row.status === "cancelado" ? true : false}
+                      onClick={() => handleOnCancel(row.id_pedido)}
+                    />
                   </td>
                 </tr>
               ))}
@@ -276,6 +306,14 @@ export default function HomeUser() {
         onClose={() => setModal(!modal)}
         openModal={modal}
         dataModal={dataModal as any}
+      />
+
+      <ModalCancel
+        id="overlayModal"
+        onClose={() => setModalCancel(!modalCancel)}
+        openModal={modalCancel}
+        idRequest={idModal}
+        dataModal={dataModalCancel as any}
       />
     </Container>
   );
